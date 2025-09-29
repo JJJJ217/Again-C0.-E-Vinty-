@@ -1,6 +1,10 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Admin Dashboard & User Management
+ * User Story: "As an admin, I can manage users and products through the admin panel"
+ */
 final class Feature_Admin_ManagementTest extends TestCase
 {
     protected function tearDown(): void
