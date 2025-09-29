@@ -9,80 +9,99 @@ final class Feature_Admin_ManagementTest extends TestCase
         unset($_SESSION['user_id'], $_SESSION['user_role']);
     }
 
-    public function testAdminRoleRequirements(): void
+    public function testPasswordHashingAndVerification(): void
+    {
+        $password = 'SecurePassword123!';
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        
+        $this->assertTrue(password_verify($password, $hashed));
+        $this->assertFalse(password_verify('wrongpassword', $hashed));
+        $this->assertNotSame($password, $hashed); // Ensure it's actually hashed
+    }
+
+    public function testRoleCheckingFunctions(): void
     {
         // Clear and initialize session
         $_SESSION = [];
         
-        // Test admin access control
+        // Test isAdmin function
         $_SESSION['user_role'] = 'admin';
-        $this->assertTrue(hasRole(['admin']), 'hasRole should return true for admin');
         $this->assertTrue(isAdmin(), 'isAdmin should return true for admin role');
+        
+        $_SESSION['user_role'] = 'customer';
+        $this->assertFalse(isAdmin(), 'isAdmin should return false for customer role');
+        
+        // Test isStaff function
+        $_SESSION['user_role'] = 'staff';
+        $this->assertTrue(isStaff());
+        
+        $_SESSION['user_role'] = 'customer';
+        $this->assertFalse(isStaff());
+        
+        // Test with no role set
+        unset($_SESSION['user_role']);
+        $this->assertFalse(isAdmin());
+        $this->assertFalse(isStaff());
+    }
+
+
+    public function testHasRoleFunctionWithArrays(): void
+    {
+        // Clear and initialize session
+        $_SESSION = [];
+        
+        $_SESSION['user_role'] = 'admin';
+        $this->assertTrue(hasRole(['admin', 'staff']), 'hasRole should return true for admin in admin/staff array');
+        $this->assertTrue(hasRole('admin'), 'hasRole should return true for exact admin match');
         
         $_SESSION['user_role'] = 'staff';
         $this->assertTrue(hasRole(['admin', 'staff']), 'hasRole should return true for staff in admin/staff array');
-        $this->assertFalse(isAdmin(), 'isAdmin should return false for staff role');
-        $this->assertTrue(isStaff(), 'isStaff should return true for staff role');
+        $this->assertTrue(hasRole('staff'), 'hasRole should return true for exact staff match');
         
         $_SESSION['user_role'] = 'customer';
-        $this->assertFalse(hasRole(['admin']), 'hasRole should return false for customer with admin requirement');
-        $this->assertFalse(isAdmin(), 'isAdmin should return false for customer role');
-        $this->assertFalse(isStaff(), 'isStaff should return false for customer role');
-    }
-
-    public function testUserStatisticsCalculation(): void
+        $this->assertFalse(hasRole(['admin', 'staff']));
+        $this->assertTrue(hasRole('customer'));
+        $this->assertTrue(hasRole(['customer', 'guest']));
+    }public function testEmailValidation(): void
     {
-        // Test user count logic (simulated)
-        $totalUsers = 15;
-        $newUsersToday = 3;
-        $adminUsers = 1;
-        $staffUsers = 2;
-        $customerUsers = 12;
-        
-        $this->assertSame(15, $totalUsers);
-        $this->assertSame($totalUsers, $adminUsers + $staffUsers + $customerUsers);
-        $this->assertLessThanOrEqual($totalUsers, $newUsersToday);
-        $this->assertGreaterThan(0, $adminUsers);
-    }
-
-    public function testProductStatusBadgeGeneration(): void
-    {
-        // Test status badge function logic
-        $statusBadges = [
-            'active' => '<span class="badge badge-success">Active</span>',
-            'inactive' => '<span class="badge badge-secondary">Inactive</span>',
-            'out_of_stock' => '<span class="badge badge-danger">Out of Stock</span>'
+        // Test email validation patterns
+        $validEmails = [
+            'test@example.com',
+            'user.name@domain.co.uk',
+            'admin@againco.com'
         ];
         
-        $this->assertStringContainsString('badge-success', $statusBadges['active']);
-        $this->assertStringContainsString('badge-danger', $statusBadges['out_of_stock']);
-        $this->assertStringContainsString('Active', $statusBadges['active']);
-        $this->assertStringContainsString('Inactive', $statusBadges['inactive']);
-    }
-
-
-    public function testUserRoleHierarchy(): void
-    {
-        // Test role hierarchy and permissions
-        $roleHierarchy = [
-            'admin' => 3,
-            'staff' => 2,
-            'customer' => 1
+        $invalidEmails = [
+            'invalid-email',
+            '@domain.com',
+            'user@',
+            ''
         ];
         
-        $this->assertGreaterThan($roleHierarchy['staff'], $roleHierarchy['admin']);
-        $this->assertGreaterThan($roleHierarchy['customer'], $roleHierarchy['staff']);
+        foreach ($validEmails as $email) {
+            $this->assertTrue(filter_var($email, FILTER_VALIDATE_EMAIL) !== false, "Email $email should be valid");
+        }
         
-        // Test role comparison
-        $userRole = 'staff';
-        $requiredRole = 'customer';
-        $hasPermission = $roleHierarchy[$userRole] >= $roleHierarchy[$requiredRole];
-        $this->assertTrue($hasPermission);
-        
-        $userRole = 'customer';
-        $requiredRole = 'admin';
-        $hasPermission = $roleHierarchy[$userRole] >= $roleHierarchy[$requiredRole];
-        $this->assertFalse($hasPermission);
+        foreach ($invalidEmails as $email) {
+            $this->assertFalse(filter_var($email, FILTER_VALIDATE_EMAIL) !== false, "Email $email should be invalid");
+        }
     }
 
+    public function testSessionManagement(): void
+    {
+        // Test session data setting and retrieval
+        $_SESSION['user_id'] = 123;
+        $_SESSION['user_role'] = 'customer';
+        $_SESSION['user_name'] = 'Test User';
+        
+        $this->assertSame(123, $_SESSION['user_id']);
+        $this->assertSame('customer', $_SESSION['user_role']);
+        $this->assertSame('Test User', $_SESSION['user_name']);
+        
+        // Test session clearing
+        unset($_SESSION['user_id'], $_SESSION['user_role'], $_SESSION['user_name']);
+        $this->assertArrayNotHasKey('user_id', $_SESSION);
+        $this->assertArrayNotHasKey('user_role', $_SESSION);
+        $this->assertArrayNotHasKey('user_name', $_SESSION);
+    }
 }
