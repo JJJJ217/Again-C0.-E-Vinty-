@@ -1,12 +1,12 @@
 <?php
 /**
- * user storiesss
+
  */
 
 require_once '../../includes/init.php';
 
 // Require user to be logged in
-requiregitLogin();
+requireLogin();
 
 $current_user = getCurrentUser();
 $errors = [];
