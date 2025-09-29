@@ -8,7 +8,7 @@ variables:
   phpVersion: 8.1
 
 jobs:
-- job: Michael_Sutjiato
+- job: Michael_Sutjiato_Tests
   steps:
   - script: |
       sudo update-alternatives --set php /usr/bin/php$(phpVersion)
@@ -29,9 +29,10 @@ jobs:
       echo "<?php class Database { public function __construct() {} public function connect() { return \$this; } public function beginTransaction() {} public function rollBack() {} public function fetchAll(\$sql, \$params = []) { return []; } public function fetch(\$sql, \$params = []) { return null; } public function query(\$sql, \$params = []) {} public function lastInsertId() { return 1; } public function createDatabaseIfNotExists() {} } ?>" > config/database.php
     displayName: 'Create dummy config files'
 
-  - script: ./vendor/bin/phpunit --debug --testsuite "Michael_Sutjiato_Tests" --log-junit "junit-michael.xml"
+  - script: ./vendor/bin/phpunit --testsuite "Michael_Sutjiato_Tests" --log-junit "junit-michael.xml"
     displayName: "Run Michael Sutjiato's Tests"
-    continueOnError: true # This allows the next step to run even if tests fail
+    # This allows the next step to run even if tests fail, which helps with debugging.
+    continueOnError: true
 
   - task: PublishTestResults@2
     inputs:
