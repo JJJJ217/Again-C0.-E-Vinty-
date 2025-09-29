@@ -97,7 +97,7 @@ exit;
         
         $filter_results = $db->fetchAll($filters_query, $params);
         
-        // Organize filters
+        // Organise filters
         foreach ($filter_results as $filter) {
             if (!in_array($filter['category'], $filters['categories'] ?? [])) {
                 $filters['categories'][] = $filter['category'];
