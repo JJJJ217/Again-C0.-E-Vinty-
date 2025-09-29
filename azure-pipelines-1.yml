@@ -4,8 +4,6 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/php
 
 trigger:
-  branches:
-    exclude:
     - main
 
 pool:
