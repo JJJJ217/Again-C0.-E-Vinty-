@@ -2,7 +2,6 @@
 /**
  * Product Detail Page
  * Implements F106 - Product catalogs
- * Story 304: View product details with photos and descriptions
  */
 
 require_once '../../includes/init.php';

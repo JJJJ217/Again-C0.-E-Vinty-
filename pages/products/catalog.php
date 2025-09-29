@@ -286,7 +286,7 @@ if (!empty($filters['category'])) {
                                        placeholder="Search products..."
                                        value="<?= htmlspecialchars($filters['search']) ?>">
                             </div>
-                            
+
                             <div class="filter-group">
                                 <label class="filter-label">Category</label>
                                 <select name="category" class="form-control">
@@ -299,7 +299,7 @@ if (!empty($filters['category'])) {
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            
+
                             <div class="filter-group">
                                 <label class="filter-label">Brand</label>
                                 <select name="brand" class="form-control">
@@ -312,7 +312,7 @@ if (!empty($filters['category'])) {
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            
+
                             <div class="filter-group">
                                 <label class="filter-label">Condition</label>
                                 <select name="condition" class="form-control">
@@ -326,7 +326,7 @@ if (!empty($filters['category'])) {
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="filter-row">
                             <div class="filter-group">
                                 <label class="filter-label">Price Range</label>
@@ -348,7 +348,7 @@ if (!empty($filters['category'])) {
                                            value="<?= $filters['max_price'] > 0 ? $filters['max_price'] : '' ?>">
                                 </div>
                             </div>
-                            
+
                             <div class="filter-group">
                                 <label class="filter-label">Sort By</label>
                                 <select name="sort" class="form-control">
@@ -359,7 +359,7 @@ if (!empty($filters['category'])) {
                                     <option value="name" <?= $filters['sort'] === 'name' ? 'selected' : '' ?>>Name A-Z</option>
                                 </select>
                             </div>
-                            
+
                             <div class="filter-group">
                                 <label class="filter-label">&nbsp;</label>
                                 <div style="display: flex; gap: 0.5rem;">
@@ -368,41 +368,41 @@ if (!empty($filters['category'])) {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Active Filters Display -->
                         <?php if (!empty($filters['category']) || !empty($filters['brand']) || !empty($filters['condition']) || 
                                   $filters['min_price'] > 0 || $filters['max_price'] > 0 || !empty($filters['search'])): ?>
                             <div class="active-filters">
                                 <span style="font-weight: 600;">Active Filters:</span>
-                                
+
                                 <?php if (!empty($filters['search'])): ?>
                                     <div class="filter-tag">
                                         Search: "<?= htmlspecialchars($filters['search']) ?>"
                                         <button type="button" onclick="removeFilter('search')">×</button>
                                     </div>
                                 <?php endif; ?>
-                                
+
                                 <?php if (!empty($filters['category'])): ?>
                                     <div class="filter-tag">
                                         Category: <?= htmlspecialchars($filters['category']) ?>
                                         <button type="button" onclick="removeFilter('category')">×</button>
                                     </div>
                                 <?php endif; ?>
-                                
+
                                 <?php if (!empty($filters['brand'])): ?>
                                     <div class="filter-tag">
                                         Brand: <?= htmlspecialchars($filters['brand']) ?>
                                         <button type="button" onclick="removeFilter('brand')">×</button>
                                     </div>
                                 <?php endif; ?>
-                                
+
                                 <?php if (!empty($filters['condition'])): ?>
                                     <div class="filter-tag">
                                         Condition: <?= ucfirst(str_replace('_', ' ', $filters['condition'])) ?>
                                         <button type="button" onclick="removeFilter('condition')">×</button>
                                     </div>
                                 <?php endif; ?>
-                                
+
                                 <?php if ($filters['min_price'] > 0 || $filters['max_price'] > 0): ?>
                                     <div class="filter-tag">
                                         Price: $<?= $filters['min_price'] > 0 ? number_format($filters['min_price'], 2) : '0' ?> - 
@@ -439,38 +439,38 @@ if (!empty($filters['category'])) {
                                     <?php else: ?>
                                         📷
                                     <?php endif; ?>
-                                    
+
                                     <?php if (!$product['in_stock']): ?>
                                         <div class="out-of-stock-overlay">Out of Stock</div>
                                     <?php endif; ?>
                                 </div>
-                                
+
                                 <div class="product-info">
                                     <h3 class="product-title">
                                         <a href="detail.php?id=<?= $product['product_id'] ?>">
                                             <?= htmlspecialchars($product['product_name']) ?>
                                         </a>
                                     </h3>
-                                    
+
                                     <div class="product-price">
                                         <?= formatCurrency($product['price']) ?>
                                     </div>
-                                    
+
                                     <div class="product-meta">
                                         <span class="product-category"><?= htmlspecialchars($product['category']) ?></span>
                                         <span class="product-brand"><?= htmlspecialchars($product['brand']) ?></span>
                                         <span class="product-condition"><?= ucfirst(str_replace('_', ' ', $product['condition_type'])) ?></span>
                                     </div>
-                                    
+
                                     <p class="product-description">
                                         <?= htmlspecialchars(substr($product['description'], 0, 100)) ?>
                                         <?= strlen($product['description']) > 100 ? '...' : '' ?>
                                     </p>
-                                    
+
                                     <div class="product-actions mt-2">
                                         <a href="detail.php?id=<?= $product['product_id'] ?>" 
                                            class="btn btn-primary">View Details</a>
-                                        
+
                                         <?php if (isLoggedIn() && $product['in_stock']): ?>
                                             <button class="btn btn-secondary add-to-cart" 
                                                     data-product-id="<?= $product['product_id'] ?>">
@@ -486,7 +486,7 @@ if (!empty($filters['category'])) {
                             </div>
                         <?php endforeach; ?>
                     </div>
-                    
+
                     <!-- Pagination -->
                     <?php if ($total_pages > 1): ?>
                         <div class="pagination-container mt-4">
@@ -496,12 +496,12 @@ if (!empty($filters['category'])) {
                             parse_str($url_parts['query'] ?? '', $url_params);
                             unset($url_params['page']);
                             $base_url = $url_parts['path'] . '?' . http_build_query($url_params);
-                            
+
                             echo createPagination($filters['page'], $total_pages, $base_url);
                             ?>
                         </div>
                     <?php endif; ?>
-                    
+
                 <?php else: ?>
                     <div class="no-results">
                         <h3>No products found</h3>
@@ -511,9 +511,9 @@ if (!empty($filters['category'])) {
             </div>
         </div>
     </main>
-    
+
     <?php include '../../includes/footer.php'; ?>
-    
+
     <script src="../../assets/js/main.js"></script>
     <script>
         // Auto-submit form when filters change
@@ -525,7 +525,7 @@ if (!empty($filters['category'])) {
                 }
             }
         });
-        
+
         // Remove individual filters
         function removeFilter(filterName) {
             const form = document.getElementById('filter-form');
@@ -535,7 +535,7 @@ if (!empty($filters['category'])) {
                 form.submit();
             }
         }
-        
+
         function removePriceFilter() {
             const form = document.getElementById('filter-form');
             const minPrice = form.querySelector('[name="min_price"]');
@@ -544,13 +544,13 @@ if (!empty($filters['category'])) {
             if (maxPrice) maxPrice.value = '';
             form.submit();
         }
-        
+
         // Add to cart functionality
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('add-to-cart')) {
                 event.preventDefault();
                 const productId = event.target.dataset.productId;
-                
+
                 fetch('../../api/cart.php', {
                     method: 'POST',
                     headers: {
