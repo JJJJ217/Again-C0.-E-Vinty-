@@ -30,7 +30,6 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Shipping & Payment: Michael Sutjiato**
 - **Shopping cart: Michael Sutjiato** 
 
- 5249f27 (Update README.md)
 ### 🔧 Core System Features
 - **Responsive Design**: Mobile-first responsive layout
 - **Role-Based Access Control**: Different interfaces for different user types
@@ -71,6 +70,7 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 │   └── admin/                 # Admin panel (future implementation)
 └── index.php                  # Homepage
 ```
+
 
 ## 🛠️ Installation & Setup
 
@@ -205,4 +205,4 @@ For technical issues:
 3. Ensure proper file permissions
 4. Check XAMPP service status
 
----
+
