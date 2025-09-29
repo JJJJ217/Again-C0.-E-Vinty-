@@ -42,6 +42,9 @@
 │   └── admin/                 # Admin panel (future implementation)
 └── index.php                  # Homepage
 ```
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 **You should include a Readme file that briefly explains the structure of your repo and also which member is responsible for which part of the code.**
 
