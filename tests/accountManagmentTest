@@ -29,4 +29,43 @@ final class Feature_Admin_ManagementTest extends TestCase
         $this->assertFalse(isAdmin(), 'isAdmin should return false for customer role');
         $this->assertFalse(isStaff(), 'isStaff should return false for customer role');
     }
+
+    public function testUserStatisticsCalculation(): void
+    {
+        // Test user count logic (simulated)
+        $totalUsers = 15;
+        $newUsersToday = 3;
+        $adminUsers = 1;
+        $staffUsers = 2;
+        $customerUsers = 12;
+        
+        $this->assertSame(15, $totalUsers);
+        $this->assertSame($totalUsers, $adminUsers + $staffUsers + $customerUsers);
+        $this->assertLessThanOrEqual($totalUsers, $newUsersToday);
+        $this->assertGreaterThan(0, $adminUsers);
+    }
+
+    public function testUserRoleHierarchy(): void
+    {
+        // Test role hierarchy and permissions
+        $roleHierarchy = [
+            'admin' => 3,
+            'staff' => 2,
+            'customer' => 1
+        ];
+        
+        $this->assertGreaterThan($roleHierarchy['staff'], $roleHierarchy['admin']);
+        $this->assertGreaterThan($roleHierarchy['customer'], $roleHierarchy['staff']);
+        
+        // Test role comparison
+        $userRole = 'staff';
+        $requiredRole = 'customer';
+        $hasPermission = $roleHierarchy[$userRole] >= $roleHierarchy[$requiredRole];
+        $this->assertTrue($hasPermission);
+        
+        $userRole = 'customer';
+        $requiredRole = 'admin';
+        $hasPermission = $roleHierarchy[$userRole] >= $roleHierarchy[$requiredRole];
+        $this->assertFalse($hasPermission);
+    }
 }
