@@ -78,6 +78,7 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 │   └── admin/                 # Admin panel (future implementation)
 └── index.php                  # Homepage
 ```
+<<<<<<< Updated upstream
 
 ## 🛠️ Installation & Setup
 
@@ -213,4 +214,8 @@ For technical issues:
 4. Check XAMPP service status
 
 ---
+>>>>>>> Stashed changes
+=======
+**You should include a Readme file that briefly explains the structure of your repo and also which member is responsible for which part of the code.**
+
 >>>>>>> Stashed changes
