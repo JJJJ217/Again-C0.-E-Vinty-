@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * F104 Product Filtering & Search
+ * F104 Product Filtering & Search Test Cases
  * User Story: "As a shopper, I can search and filter products to find vintage items"
  */
 final class Feature_Products_CatalogTest extends TestCase
