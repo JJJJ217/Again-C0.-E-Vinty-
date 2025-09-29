@@ -36,43 +36,6 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Form Validation**: Client and server-side validation
 
 
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- XAMPP (or similar Apache + MySQL + PHP environment)
-- PHP 8.0 or higher
-- MySQL 8.0 or higher
-
-### Installation Steps
-
-1. **Clone/Download the project** to your XAMPP htdocs directory:
-   ```
-   C:\xampp\htdocs\vinty-draft-webpage\
-   ```
-
-2. **Start XAMPP Services**:
-   - Start Apache
-   - Start MySQL
-
-3. **Create Database**:
-   - Open phpMyAdmin (http://localhost/phpmyadmin)
-   - Create a new database named `evinty_ecommerce`
-   - Import the database schema from `database/schema.sql`
-
-4. **Configure Database Connection**:
-   - Edit `config/config.php` if needed
-   - Default settings work with standard XAMPP installation
-
-5. **Access the Application**:
-   - Open browser and navigate to: `http://localhost/vinty-draft-webpage`
-
-## 🧪 Testing
-
-### Demo Accounts
-The system includes a default admin account:
-- **Email**: admin@evinty.com
-- **Password**: admin123
-
 ### Test User Registration
 1. Navigate to the registration page
 2. Create accounts with different roles (Customer, Staff, Admin)
