@@ -75,25 +75,31 @@ if (!function_exists('formatCurrency')) {
     }
 }
 
-// Mock functions for testing - these override any existing functions
-function hasRole($roles): bool {
-    if (!isset($_SESSION['user_role'])) {
-        return false;
+// Mock functions for testing - only declare if they don't exist
+if (!function_exists('hasRole')) {
+    function hasRole($roles): bool {
+        if (!isset($_SESSION['user_role'])) {
+            return false;
+        }
+        
+        if (is_array($roles)) {
+            return in_array($_SESSION['user_role'], $roles);
+        }
+        
+        return $_SESSION['user_role'] === $roles;
     }
-    
-    if (is_array($roles)) {
-        return in_array($_SESSION['user_role'], $roles);
-    }
-    
-    return $_SESSION['user_role'] === $roles;
 }
 
-function isAdmin(): bool {
-    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+if (!function_exists('isAdmin')) {
+    function isAdmin(): bool {
+        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+    }
 }
 
-function isStaff(): bool {
-    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'staff';
+if (!function_exists('isStaff')) {
+    function isStaff(): bool {
+        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'staff';
+    }
 }
 
 if (!function_exists('safeHtml')) {

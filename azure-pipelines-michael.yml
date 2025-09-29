@@ -1,0 +1,93 @@
+trigger:
+- main
+
+# Manual trigger for Michael's specific tests
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  phpVersion: 8.1
+
+jobs:
+- job: Michael_Sutjiato_Individual_Tests
+  displayName: "Michael Sutjiato - Individual Test Run"
+  steps:
+  - script: |
+      echo "Setting up PHP $(phpVersion) for Michael Sutjiato's test suite"
+      sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+      sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+      sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+      sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+      sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+      php -version
+    displayName: 'Configure PHP Environment'
+
+  - script: |
+      echo "Installing dependencies..."
+      composer install --no-interaction --prefer-dist --optimize-autoloader
+    displayName: 'Install Composer Dependencies'
+
+  - script: |
+      echo "Setting up test environment..."
+      # Create dummy config files to prevent init.php from failing
+      mkdir -p config
+      echo "<?php define('SITE_URL', 'http://localhost'); define('DB_HOST', 'localhost'); define('DB_NAME', 'test'); define('DB_USER', 'test'); define('DB_PASS', ''); ?>" > config/config.php
+      echo "<?php class Database { public function __construct() {} public function connect() { return \$this; } public function beginTransaction() {} public function commit() {} public function rollBack() {} public function fetchAll(\$sql, \$params = []) { return []; } public function fetch(\$sql, \$params = []) { return null; } public function query(\$sql, \$params = []) { return true; } public function lastInsertId() { return 1; } public function createDatabaseIfNotExists() {} } ?>" > config/database.php
+      
+      # Ensure test files exist
+      ls -la tests/
+    displayName: 'Setup Test Environment'
+
+  - script: |
+      echo "=== Running Michael Sutjiato's Test Suite ==="
+      echo "Test files included:"
+      echo "- tests/Feature_Cart_ShoppingTest.php"
+      echo "- tests/SmokeTest.php" 
+      echo "- tests/FunctionsTest.php"
+      echo ""
+      
+      # Run with verbose output for debugging
+      ./vendor/bin/phpunit \
+        --testsuite "Michael_Sutjiato_Tests" \
+        --log-junit "junit-michael-results.xml" \
+        --coverage-text \
+        --colors=never \
+        --verbose \
+        --debug
+    displayName: "Execute Michael's Test Suite"
+    continueOnError: true
+
+  - script: |
+      echo "=== Test Results Summary ==="
+      if [ -f "junit-michael-results.xml" ]; then
+        echo "✓ Test results file generated successfully"
+        echo "File size: $(stat -f%z junit-michael-results.xml 2>/dev/null || stat -c%s junit-michael-results.xml) bytes"
+        echo ""
+        echo "=== XML Content Preview ==="
+        head -20 junit-michael-results.xml
+      else
+        echo "✗ Test results file not found"
+        echo "Listing current directory:"
+        ls -la
+      fi
+    displayName: 'Verify Test Results'
+    condition: always()
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'junit-michael-results.xml'
+      testRunTitle: "Michael Sutjiato - Individual Test Results"
+      failTaskOnFailedTests: false
+      publishRunAttachments: true
+    condition: succeededOrFailed()
+    displayName: 'Publish Michael Test Results'
+
+  - script: |
+      echo "=== Final Status Report ==="
+      echo "Pipeline completed for Michael Sutjiato"
+      echo "Timestamp: $(date)"
+      echo "Check the Test Results tab in Azure DevOps to view detailed results"
+    displayName: 'Final Report'
+    condition: always()
