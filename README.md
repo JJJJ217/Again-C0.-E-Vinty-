@@ -18,21 +18,14 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Database**: MySQL 8.0+
 - **Local Development**: XAMPP (Apache + MySQL)
 
-## 📋 Features Implemented by Members
+## 📋 Features Implemented
 
-### Feature
-- **Registration & Login: Jiaming Huang**
-- **Profile management: Charlotte Pham**
-- **Manipulate users: Jiaming**
-- **Product filtering: Thea Ngo**
-- **Product search: Thea Ngo**
-- **Product catalogs: Charlotte Pham**
-- **Inventory control: Baljinnyam Gansukh**
-- **Order status: Baljinnyam Gansukh** 
-- **Shipping & Payment: Michael Sutjiato**
-- **Shopping cart: Michael Sutjiato** 
-
-
+### ✅ User Management (F101, F102, F103)
+- **User Registration**: Role-based registration (Customer, Staff, Admin)
+- **User Authentication**: Secure login/logout with session management
+- **Profile Management**: Complete profile editing and account management
+- **Password Reset**: Email-based password reset functionality
+- **Security Features**: Account lockout, password strength validation, CSRF protection
 
 ### 🔧 Core System Features
 - **Responsive Design**: Mobile-first responsive layout
