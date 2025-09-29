@@ -23,6 +23,7 @@
       <file>tests/SmokeTest.php</file>
       <file>tests/FunctionsTest.php</file>
     </testsuite>
+  </testsuites>
   <logging>
     <junit outputFile="junit.xml"/>
   </logging>
