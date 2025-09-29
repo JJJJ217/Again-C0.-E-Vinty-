@@ -36,9 +36,30 @@ jobs:
       echo "<?php define('SITE_URL', 'http://localhost'); define('DB_HOST', 'localhost'); define('DB_NAME', 'test'); define('DB_USER', 'test'); define('DB_PASS', ''); ?>" > config/config.php
       echo "<?php class Database { public function __construct() {} public function connect() { return \$this; } public function beginTransaction() {} public function commit() {} public function rollBack() {} public function fetchAll(\$sql, \$params = []) { return []; } public function fetch(\$sql, \$params = []) { return null; } public function query(\$sql, \$params = []) { return true; } public function lastInsertId() { return 1; } public function createDatabaseIfNotExists() {} } ?>" > config/database.php
       
-      # Ensure test files exist
+      # Verify test files exist
+      echo "=== Checking test files ==="
       ls -la tests/
+      echo ""
+      echo "=== Verifying Michael's test files ==="
+      test -f tests/Feature_Cart_ShoppingTest.php && echo "✓ Feature_Cart_ShoppingTest.php exists" || echo "✗ Feature_Cart_ShoppingTest.php missing"
+      test -f tests/SmokeTest.php && echo "✓ SmokeTest.php exists" || echo "✗ SmokeTest.php missing"
+      test -f tests/FunctionsTest.php && echo "✓ FunctionsTest.php exists" || echo "✗ FunctionsTest.php missing"
+      echo ""
+      echo "=== Checking phpunit.xml configuration ==="
+      cat phpunit.xml | grep -A 10 "Michael_Sutjiato_Tests"
     displayName: 'Setup Test Environment'
+
+  - script: |
+      echo "=== Validating PHPUnit Configuration ==="
+      # List available test suites
+      echo "Available test suites:"
+      ./vendor/bin/phpunit --list-suites
+      echo ""
+      # Test configuration validation
+      echo "Validating configuration:"
+      ./vendor/bin/phpunit --configuration phpunit.xml --list-tests --testsuite "Michael_Sutjiato_Tests" || echo "Warning: Could not list tests for Michael_Sutjiato_Tests"
+    displayName: 'Validate PHPUnit Setup'
+    continueOnError: true
 
   - script: |
       echo "=== Running Michael Sutjiato's Test Suite ==="
@@ -48,14 +69,19 @@ jobs:
       echo "- tests/FunctionsTest.php"
       echo ""
       
-      # Run with verbose output for debugging
+      # Check PHPUnit version first
+      echo "PHPUnit version:"
+      ./vendor/bin/phpunit --version
+      echo ""
+      
+      # Run tests with valid options for PHPUnit 10.x
+      echo "Executing test suite..."
       ./vendor/bin/phpunit \
         --testsuite "Michael_Sutjiato_Tests" \
         --log-junit "junit-michael-results.xml" \
         --coverage-text \
         --colors=never \
-        --verbose \
-        --debug
+        --testdox
     displayName: "Execute Michael's Test Suite"
     continueOnError: true
 
