@@ -27,6 +27,18 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Password Reset**: Email-based password reset functionality
 - **Security Features**: Account lockout, password strength validation, CSRF protection
 
+### � Feature Development by Members
+- **Registration & Login: Jiaming Huang**
+- **Profile management: Charlotte Pham**
+- **Manipulate users: Jiaming**
+- **Product filtering: Thea Ngo**
+- **Product search: Thea Ngo**
+- **Product catalogs: Charlotte Pham**
+- **Inventory control: Baljinnyam Gansukh**
+- **Order status: Baljinnyam Gansukh** 
+- **Shipping & Payment: Michael Sutjiato**
+- **Shopping cart: Michael Sutjiato** 
+
 ### 🔧 Core System Features
 - **Responsive Design**: Mobile-first responsive layout
 - **Role-Based Access Control**: Different interfaces for different user types
@@ -35,6 +47,75 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Error Handling**: Comprehensive error handling and logging
 - **Form Validation**: Client and server-side validation
 
+## 🗂️ Project Structure
+
+```
+├── assets/
+│   ├── css/
+│   │   └── style.css          # Main stylesheet
+│   ├── js/
+│   │   └── main.js            # Client-side JavaScript
+│   └── images/                # Image assets
+├── config/
+│   ├── config.php             # Application configuration
+│   └── database.php           # Database connection class
+├── database/
+│   └── schema.sql             # Database schema and sample data
+├── includes/
+│   ├── functions.php          # Utility functions
+│   ├── header.php             # Site header template
+│   ├── footer.php             # Site footer template
+│   ├── init.php               # Application bootstrap
+│   └── session.php            # Session management
+├── pages/
+│   ├── auth/
+│   │   ├── login.php          # User login page
+│   │   ├── register.php       # User registration page
+│   │   ├── logout.php         # Logout handler
+│   │   ├── forgot-password.php # Password reset request
+│   │   └── reset-password.php  # Password reset completion
+│   ├── user/
+│   │   └── profile.php        # User profile management
+│   └── admin/                 # Admin panel (future implementation)
+└── index.php                  # Homepage
+```
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- XAMPP (or similar Apache + MySQL + PHP environment)
+- PHP 8.0 or higher
+- MySQL 8.0 or higher
+
+### Installation Steps
+
+1. **Clone/Download the project** to your XAMPP htdocs directory:
+   ```
+   C:\xampp\htdocs\vinty-draft-webpage\
+   ```
+
+2. **Start XAMPP Services**:
+   - Start Apache
+   - Start MySQL
+
+3. **Create Database**:
+   - Open phpMyAdmin (http://localhost/phpmyadmin)
+   - Create a new database named `evinty_ecommerce`
+   - Import the database schema from `database/schema.sql`
+
+4. **Configure Database Connection**:
+   - Edit `config/config.php` if needed
+   - Default settings work with standard XAMPP installation
+
+5. **Access the Application**:
+   - Open browser and navigate to: `http://localhost/vinty-draft-webpage`
+
+## 🧪 Testing
+
+### Demo Accounts
+The system includes a default admin account:
+- **Email**: admin@evinty.com
+- **Password**: admin123
 
 ### Test User Registration
 1. Navigate to the registration page
