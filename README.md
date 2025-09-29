@@ -75,6 +75,34 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 └── index.php                  # Homepage
 ```
 
+## 👥 Team Members & Code Responsibilities
+
+### Feature Ownership
+- **Registration & Login**: Jiaming Huang (`pages/authentication/`, session management)
+- **Profile Management**: Charlotte Pham (`pages/user/profile.php`, user data handling)
+- **User Management**: Jiaming Huang (`pages/admin/users/`, `api/admin.php`)
+- **Product Filtering & Search**: Thea Ngo (search functionality, filter components)
+- **Product Catalogs**: Charlotte Pham (product display, catalog management)
+- **Inventory Control**: Baljinnyam Gansukh (stock management, inventory tracking)
+- **Order Status**: Baljinnyam Gansukh (order tracking, status updates)
+- **Shipping & Payment**: Michael Sutjiato (payment processing, shipping logic)
+- **Shopping Cart**: Michael Sutjiato (`user/cart.php`, `api/cart.php`)
+
+### Directory Structure by Responsibility
+```
+├── pages/authentication/    # Jiaming Huang - User auth system
+├── pages/user/profile.php   # Charlotte Pham - Profile management  
+├── pages/admin/users/       # Jiaming Huang - User administration
+├── pages/admin/products/    # Charlotte Pham & Baljinnyam Gansukh
+├── user/cart.php           # Michael Sutjiato - Shopping cart
+├── api/cart.php            # Michael Sutjiato - Cart API
+├── api/admin.php           # Jiaming Huang - Admin API
+└── tests/                  # Individual member tests
+    ├── accountManagmentTest      # Jiaming Huang
+    ├── profileManagementTest     # Charlotte Pham  
+    └── userAuthTest             # Jiaming Huang
+```
+
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
@@ -210,4 +238,4 @@ For technical issues:
 
 ---
 
-**Built with ❤️ for vintage lovers**
+**Built with ❤️ for vintage lovers by the Again&Co Team**
