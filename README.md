@@ -18,16 +18,7 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Database**: MySQL 8.0+
 - **Local Development**: XAMPP (Apache + MySQL)
 
-## 📋 Features Implemented
 
-### ✅ User Management (F101, F102, F103)
-- **User Registration**: Role-based registration (Customer, Staff, Admin)
-- **User Authentication**: Secure login/logout with session management
-- **Profile Management**: Complete profile editing and account management
-- **Password Reset**: Email-based password reset functionality
-- **Security Features**: Account lockout, password strength validation, CSRF protection
-
-### � Feature Development by Members
 - **Registration & Login: Jiaming Huang**
 - **Profile management: Charlotte Pham**
 - **Manipulate users: Jiaming**
@@ -39,6 +30,7 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Shipping & Payment: Michael Sutjiato**
 - **Shopping cart: Michael Sutjiato** 
 
+ 5249f27 (Update README.md)
 ### 🔧 Core System Features
 - **Responsive Design**: Mobile-first responsive layout
 - **Role-Based Access Control**: Different interfaces for different user types
@@ -213,4 +205,4 @@ For technical issues:
 3. Ensure proper file permissions
 4. Check XAMPP service status
 
-
+---
