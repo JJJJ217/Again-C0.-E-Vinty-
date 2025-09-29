@@ -208,6 +208,4 @@ For technical issues:
 3. Ensure proper file permissions
 4. Check XAMPP service status
 
----
 
-**Built with ❤️ for vintage lovers**
