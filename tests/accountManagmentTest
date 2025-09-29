@@ -33,4 +33,5 @@ final class Feature_Admin_ManagementTest extends TestCase
         $this->assertFalse(isAdmin(), 'isAdmin should return false for customer role');
         $this->assertFalse(isStaff(), 'isStaff should return false for customer role');
     }
+    
 }
