@@ -1,14 +1,7 @@
 ### Feature
-- **Registration & Login: Jiaming Huang**
-- **Profile management: Charlotte Pham**
-- **Manipulate users: Jiaming**
-- **Product filtering: Thea Ngo**
-- **Product search: Thea Ngo**
-- **Product catalogs: Charlotte Pham**
 - **Inventory control: Baljinnyam Gansukh**
 - **Order status: Baljinnyam Gansukh** 
-- **Shipping & Payment: Michael Sutjiato**
-- **Shopping cart: Michael Sutjiato** 
+
 
 ## 🗂️ Project Structure
 
