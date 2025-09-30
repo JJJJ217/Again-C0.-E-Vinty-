@@ -23,6 +23,9 @@
       <file>tests/SmokeTest.php</file>
       <file>tests/FunctionsTest.php</file>
     </testsuite>
+    <testsuite name="Baljinnyam_Gansukh_Tests">
+      <file>tests/Feature_Inventory_ControlTest.php</file>
+    </testsuite>
   </testsuites>
   <logging>
     <junit outputFile="junit.xml"/>
