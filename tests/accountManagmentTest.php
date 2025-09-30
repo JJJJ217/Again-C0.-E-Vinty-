@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-final class Feature_Account_ManagementTest extends TestCase
+final class accountManagementTest extends TestCase
 {
     protected function tearDown(): void
     {
