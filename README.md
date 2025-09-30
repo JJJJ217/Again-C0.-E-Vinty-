@@ -18,17 +18,17 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Database**: MySQL 8.0+
 - **Local Development**: XAMPP (Apache + MySQL)
 
-
-- **Registration & Login: Jiaming Huang**
-- **Profile management: Charlotte Pham**
-- **Manipulate users: Jiaming**
-- **Product filtering: Thea Ngo**
-- **Product search: Thea Ngo**
-- **Product catalogs: Charlotte Pham**
-- **Inventory control: Baljinnyam Gansukh**
-- **Order status: Baljinnyam Gansukh** 
-- **Shipping & Payment: Michael Sutjiato**
-- **Shopping cart: Michael Sutjiato** 
+## 👥 Team & Feature Assignments
+- **Registration & Login**: Jiaming Huang
+- **Profile management**: Charlotte Pham
+- **Manipulate users**: Jiaming Huang
+- **Product filtering**: Thea Ngo
+- **Product search**: Thea Ngo
+- **Product catalogs**: Charlotte Pham
+- **Inventory control**: Baljinnyam Gansukh
+- **Order status**: Baljinnyam Gansukh
+- **Shipping & Payment**: Michael Sutjiato
+- **Shopping cart**: Michael Sutjiato
 
 ### 🔧 Core System Features
 - **Responsive Design**: Mobile-first responsive layout
@@ -37,7 +37,6 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Session Management**: Secure session handling with timeout
 - **Error Handling**: Comprehensive error handling and logging
 - **Form Validation**: Client and server-side validation
-
 ## 🗂️ Project Structure
 
 ```
@@ -70,6 +69,7 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 │   └── admin/                 # Admin panel (future implementation)
 └── index.php                  # Homepage
 ```
+<<<<<<< HEAD
 
 
 ## 🛠️ Installation & Setup
@@ -197,6 +197,13 @@ The application is designed to support AJAX functionality:
 
 This project is developed for educational purposes as part of an e-commerce website assignment.
 
+**Team Members & Responsibilities:**
+- **Jiaming Huang**: Registration & Login, User Management
+- **Charlotte Pham**: Profile Management, Product Catalogs  
+- **Thea Ngo**: Product Filtering & Search
+- **Baljinnyam Gansukh**: Inventory Control, Order Status
+- **Michael Sutjiato**: Shopping Cart, Shipping & Payment
+
 ## 🆘 Support
 
 For technical issues:
@@ -204,5 +211,4 @@ For technical issues:
 2. Verify database connection
 3. Ensure proper file permissions
 4. Check XAMPP service status
-
 
