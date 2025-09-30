@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
  * User Story: 302
  */
 
-final class Feature_Admin_ManagementTest extends TestCase
+final class Feature_Profile_ManagementTest extends TestCase
 {
     public function testUserProfileNameSplitting(): void
     {

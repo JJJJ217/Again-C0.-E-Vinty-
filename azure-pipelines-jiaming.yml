@@ -41,8 +41,8 @@ jobs:
       ls -la tests/
       echo ""
       echo "=== Verifying Jiaming's test files ==="
-      test -f tests/userAuthTest && echo "✓ userAuthTest exists" || echo "✗ userAuthTest missing"
-      test -f tests/accountManagmentTest && echo "✓ accountManagmentTest exists" || echo "✗ accountManagmentTest missing"
+      test -f tests/userAuthTest.php && echo "✓ userAuthTest.php exists" || echo "✗ userAuthTest.php missing"
+      test -f tests/accountManagmentTest.php && echo "✓ accountManagmentTest.php exists" || echo "✗ accountManagmentTest.php missing"
       echo ""
       echo "=== Checking phpunit.xml configuration ==="
       cat phpunit.xml | grep -A 10 "Jiaming_Huang_Tests"
@@ -63,8 +63,8 @@ jobs:
   - script: |
       echo "=== Running Jiaming Huang's Test Suite ==="
       echo "Test files included:"
-      echo "- tests/userAuthTest"
-      echo "- tests/accountManagmentTest"
+      echo "- tests/userAuthTest.php"
+      echo "- tests/accountManagmentTest.php"
       echo ""
       
       # Check PHPUnit version first

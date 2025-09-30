@@ -13,6 +13,7 @@
     </testsuite>
     <testsuite name="Charlotte_Pham_Tests">
       <file>tests/profileManagementTest.php</file>
+      <file>tests/Feature_Products_CatalogTest.php</file>
     </testsuite>
     <testsuite name="Thea_Ngo_Tests">
       <file>tests/Feature_Products_CatalogTest.php</file>

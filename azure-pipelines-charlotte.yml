@@ -41,7 +41,7 @@ jobs:
       ls -la tests/
       echo ""
       echo "=== Verifying Charlotte's test files ==="
-      test -f tests/profileManagementTest && echo "✓ profileManagementTest exists" || echo "✗ profileManagementTest missing"
+      test -f tests/profileManagementTest.php && echo "✓ profileManagementTest.php exists" || echo "✗ profileManagementTest.php missing"
       test -f tests/Feature_Products_CatalogTest.php && echo "✓ Feature_Products_CatalogTest.php exists" || echo "✗ Feature_Products_CatalogTest.php missing"
       echo ""
       echo "=== Checking phpunit.xml configuration ==="
@@ -63,7 +63,7 @@ jobs:
   - script: |
       echo "=== Running Charlotte Pham's Test Suite ==="
       echo "Test files included:"
-      echo "- tests/profileManagementTest"
+      echo "- tests/profileManagementTest.php"
       echo "- tests/Feature_Products_CatalogTest.php"
       echo ""
       
