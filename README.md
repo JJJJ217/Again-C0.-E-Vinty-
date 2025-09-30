@@ -1,15 +1,42 @@
-### Feature
-- **Registration & Login: Jiaming Huang**
-- **Profile management: Charlotte Pham**
-- **Manipulate users: Jiaming**
-- **Product filtering: Thea Ngo**
-- **Product search: Thea Ngo**
-- **Product catalogs: Charlotte Pham**
-- **Inventory control: Baljinnyam Gansukh**
-- **Order status: Baljinnyam Gansukh** 
-- **Shipping & Payment: Michael Sutjiato**
-- **Shopping cart: Michael Sutjiato** 
+# 🛍️ Again&Co - Vintage E-Commerce Platform
 
+A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring user management, product catalogs, shopping cart, checkout system, and comprehensive admin dashboard.
+
+![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+
+## 🚀 Project Overview
+
+**Again&Co** is a comprehensive e-commerce platform designed for vintage item sales. The system supports multiple user roles (Customer, Staff, Admin) and provides a complete shopping experience from product browsing to order completion.
+
+### Tech Stack
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Backend**: PHP 8.0+
+- **Database**: MySQL 8.0+
+- **Local Development**: XAMPP (Apache + MySQL)
+
+## 👥 Team & Feature Assignments
+- **Registration & Login**: Jiaming Huang
+- **Profile management**: Charlotte Pham
+- **Manipulate users**: Jiaming Huang
+- **Product filtering**: Thea Ngo
+- **Product search**: Thea Ngo
+- **Product catalogs**: Charlotte Pham
+- **Inventory control**: Baljinnyam Gansukh
+- **Order status**: Baljinnyam Gansukh
+- **Shipping & Payment**: Michael Sutjiato
+- **Shopping cart**: Michael Sutjiato
+
+### 🔧 Core System Features
+- **Responsive Design**: Mobile-first responsive layout
+- **Role-Based Access Control**: Different interfaces for different user types
+- **Security**: Password hashing, input sanitization, SQL injection prevention
+- **Session Management**: Secure session handling with timeout
+- **Error Handling**: Comprehensive error handling and logging
+- **Form Validation**: Client and server-side validation
 ## 🗂️ Project Structure
 
 ```
@@ -42,7 +69,6 @@
 │   └── admin/                 # Admin panel (future implementation)
 └── index.php                  # Homepage
 ```
-
 ## 👥 Team Members & Code Responsibilities
 
 ### Feature Ownership
@@ -195,6 +221,13 @@ The application is designed to support AJAX functionality:
 ## 📜 License
 
 This project is developed for educational purposes as part of an e-commerce website assignment.
+
+**Team Members & Responsibilities:**
+- **Jiaming Huang**: Registration & Login, User Management
+- **Charlotte Pham**: Profile Management, Product Catalogs  
+- **Thea Ngo**: Product Filtering & Search
+- **Baljinnyam Gansukh**: Inventory Control, Order Status
+- **Michael Sutjiato**: Shopping Cart, Shipping & Payment
 
 ## 🆘 Support
 

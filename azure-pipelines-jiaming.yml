@@ -1,0 +1,117 @@
+trigger:
+- main
+
+# Manual trigger for Jiaming's specific test units
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  phpVersion: 8.1
+
+jobs:
+- job: Jiaming_Huang_Individual_Tests
+  displayName: "Jiaming Huang - Individual Test Run"
+  steps:
+  - script: |
+      echo "Setting up PHP $(phpVersion) for Jiaming Huang's test suite"
+      sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+      sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+      sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+      sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+      sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+      php -version
+    displayName: 'Configure PHP Environment'
+
+  - script: |
+      echo "Installing dependencies..."
+      composer install --no-interaction --prefer-dist --optimize-autoloader
+    displayName: 'Install Composer Dependencies'
+
+  - script: |
+      echo "Setting up test environment..."
+      # Create dummy config files to prevent init.php from failing
+      mkdir -p config
+      echo "<?php define('SITE_URL', 'http://localhost'); define('DB_HOST', 'localhost'); define('DB_NAME', 'test'); define('DB_USER', 'test'); define('DB_PASS', ''); ?>" > config/config.php
+      echo "<?php class Database { public function __construct() {} public function connect() { return \$this; } public function beginTransaction() {} public function commit() {} public function rollBack() {} public function fetchAll(\$sql, \$params = []) { return []; } public function fetch(\$sql, \$params = []) { return null; } public function query(\$sql, \$params = []) { return true; } public function lastInsertId() { return 1; } public function createDatabaseIfNotExists() {} } ?>" > config/database.php
+      
+      # Verify test files exist
+      echo "=== Checking test files ==="
+      ls -la tests/
+      echo ""
+      echo "=== Verifying Jiaming's test files ==="
+      test -f tests/userAuthTest && echo "✓ userAuthTest exists" || echo "✗ userAuthTest missing"
+      test -f tests/accountManagmentTest && echo "✓ accountManagmentTest exists" || echo "✗ accountManagmentTest missing"
+      echo ""
+      echo "=== Checking phpunit.xml configuration ==="
+      cat phpunit.xml | grep -A 10 "Jiaming_Huang_Tests"
+    displayName: 'Setup Test Environment'
+
+  - script: |
+      echo "=== Validating PHPUnit Configuration ==="
+      # List available test suites
+      echo "Available test suites:"
+      ./vendor/bin/phpunit --list-suites
+      echo ""
+      # Test configuration validation
+      echo "Validating configuration:"
+      ./vendor/bin/phpunit --configuration phpunit.xml --list-tests --testsuite "Jiaming_Huang_Tests" || echo "Warning: Could not list tests for Jiaming_Huang_Tests"
+    displayName: 'Validate PHPUnit Setup'
+    continueOnError: true
+
+  - script: |
+      echo "=== Running Jiaming Huang's Test Suite ==="
+      echo "Test files included:"
+      echo "- tests/userAuthTest"
+      echo "- tests/accountManagmentTest"
+      echo ""
+      
+      # Check PHPUnit version first
+      echo "PHPUnit version:"
+      ./vendor/bin/phpunit --version
+      echo ""
+      
+      # Run tests with valid options for PHPUnit 10.x
+      echo "Executing test suite..."
+      ./vendor/bin/phpunit \
+        --testsuite "Jiaming_Huang_Tests" \
+        --log-junit "junit-jiaming-results.xml" \
+        --coverage-text \
+        --colors=never \
+        --testdox
+    displayName: "Execute Jiaming's Test Suite"
+    continueOnError: true
+
+  - script: |
+      echo "=== Test Results Summary ==="
+      if [ -f "junit-jiaming-results.xml" ]; then
+        echo "✓ Test results file generated successfully"
+        echo "File size: $(stat -f%z junit-jiaming-results.xml 2>/dev/null || stat -c%s junit-jiaming-results.xml) bytes"
+        echo ""
+        echo "=== XML Content Preview ==="
+        head -20 junit-jiaming-results.xml
+      else
+        echo "✗ Test results file not found"
+        echo "Listing current directory:"
+        ls -la
+      fi
+    displayName: 'Verify Test Results'
+    condition: always()
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'junit-jiaming-results.xml'
+      testRunTitle: "Jiaming Huang - Individual Test Results"
+      failTaskOnFailedTests: false
+      publishRunAttachments: true
+    condition: succeededOrFailed()
+    displayName: 'Publish Jiaming Test Results'
+
+  - script: |
+      echo "=== Final Status Report ==="
+      echo "Pipeline completed for Jiaming Huang"
+      echo "Timestamp: $(date)"
+      echo "Check the Test Results tab in Azure DevOps to view detailed results"
+    displayName: 'Final Report'
+    condition: always()
