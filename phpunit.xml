@@ -8,12 +8,11 @@
          beStrictAboutOutputDuringTests="false">
   <testsuites>
     <testsuite name="Jiaming_Huang_Tests">
-      <file>tests/userAuthTest</file>
-      <file>tests/accountManagmentTest</file>
+      <file>tests/userAuthTest.php</file>
+      <file>tests/accountManagmentTest.php</file>
     </testsuite>
     <testsuite name="Charlotte_Pham_Tests">
-      <file>tests/profileManagementTest</file>
-      <file>tests/Feature_Products_CatalogTest.php</file>
+      <file>tests/profileManagementTest.php</file>
     </testsuite>
     <testsuite name="Thea_Ngo_Tests">
       <file>tests/Feature_Products_CatalogTest.php</file>
