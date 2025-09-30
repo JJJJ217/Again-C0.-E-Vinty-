@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-final class Feature_User_AuthenticationTest extends TestCase
+final class userAuthTest extends TestCase
 {
     protected function tearDown(): void
     {
