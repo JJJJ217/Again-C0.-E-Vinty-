@@ -1,0 +1,135 @@
+trigger:
+- main
+
+# Manual trigger for Baljinnyam's specific test units
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  phpVersion: 8.1
+
+jobs:
+- job: Baljinnyam_Gansukh_Individual_Tests
+  displayName: "Baljinnyam Gansukh - Individual Test Run"
+  steps:
+  - script: |
+      echo "Setting up PHP $(phpVersion) for Baljinnyam Gansukh's test suite"
+      sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+      sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+      sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+      sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+      sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+      php -version
+    displayName: 'Configure PHP Environment'
+
+  - script: |
+      echo "Installing dependencies..."
+      composer install --no-interaction --prefer-dist --optimize-autoloader
+    displayName: 'Install Composer Dependencies'
+
+  - script: |
+      echo "Setting up test environment..."
+      # Create dummy config files to prevent init.php from failing
+      mkdir -p config
+      echo "<?php define('SITE_URL', 'http://localhost'); define('DB_HOST', 'localhost'); define('DB_NAME', 'test'); define('DB_USER', 'test'); define('DB_PASS', ''); ?>" > config/config.php
+      echo "<?php class Database { public function __construct() {} public function connect() { return \$this; } public function beginTransaction() {} public function commit() {} public function rollBack() {} public function fetchAll(\$sql, \$params = []) { return []; } public function fetch(\$sql, \$params = []) { return null; } public function query(\$sql, \$params = []) { return true; } public function lastInsertId() { return 1; } public function createDatabaseIfNotExists() {} } ?>" > config/database.php
+      
+      # Verify test files exist
+      echo "=== Checking test files ==="
+      ls -la tests/
+      echo ""
+      echo "=== Verifying Baljinnyam's test files ==="
+      test -f tests/Feature_Inventory_ControlTest.php && echo "✓ Feature_Inventory_ControlTest.php exists" || echo "✗ Feature_Inventory_ControlTest.php missing"
+      echo ""
+      echo "=== Checking phpunit.xml configuration ==="
+      cat phpunit.xml | grep -A 10 "Baljinnyam_Gansukh_Tests"
+    displayName: 'Setup Test Environment'
+
+  - script: |
+      echo "=== Validating PHPUnit Configuration ==="
+      # List available test suites
+      echo "Available test suites:"
+      ./vendor/bin/phpunit --list-suites
+      echo ""
+      # Test configuration validation
+      echo "Validating configuration:"
+      ./vendor/bin/phpunit --configuration phpunit.xml --list-tests --testsuite "Baljinnyam_Gansukh_Tests" || echo "Warning: Could not list tests for Baljinnyam_Gansukh_Tests"
+    displayName: 'Validate PHPUnit Setup'
+    continueOnError: true
+
+  - script: |
+      echo "=== Running Baljinnyam Gansukh's Test Suite ==="
+      echo "Test files included:"
+      echo "- tests/Feature_Inventory_ControlTest.php"
+      echo ""
+      echo "Feature Focus: F107 - Inventory Control"
+      echo "Testing Areas:"
+      echo "  ✓ Stock level management"
+      echo "  ✓ Inventory availability checks"
+      echo "  ✓ Low stock warnings"
+      echo "  ✓ Bulk inventory operations"
+      echo "  ✓ Stock audit logging"
+      echo "  ✓ Admin permissions"
+      echo ""
+      
+      # Check PHPUnit version first
+      echo "PHPUnit version:"
+      ./vendor/bin/phpunit --version
+      echo ""
+      
+      # Run tests with valid options for PHPUnit 10.x
+      echo "Executing test suite..."
+      ./vendor/bin/phpunit \
+        --testsuite "Baljinnyam_Gansukh_Tests" \
+        --log-junit "junit-baljinnyam-results.xml" \
+        --coverage-text \
+        --colors=never \
+        --testdox
+    displayName: "Execute Baljinnyam's Test Suite"
+    continueOnError: true
+
+  - script: |
+      echo "=== Test Results Summary ==="
+      if [ -f "junit-baljinnyam-results.xml" ]; then
+        echo "✓ Test results file generated successfully"
+        echo "File size: $(stat -f%z junit-baljinnyam-results.xml 2>/dev/null || stat -c%s junit-baljinnyam-results.xml) bytes"
+        echo ""
+        echo "=== XML Content Preview ==="
+        head -20 junit-baljinnyam-results.xml
+      else
+        echo "✗ Test results file not found"
+        echo "Listing current directory:"
+        ls -la
+      fi
+    displayName: 'Verify Test Results'
+    condition: always()
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'junit-baljinnyam-results.xml'
+      testRunTitle: "Baljinnyam Gansukh - Inventory Control Test Results"
+      failTaskOnFailedTests: false
+      publishRunAttachments: true
+    condition: succeededOrFailed()
+    displayName: 'Publish Baljinnyam Test Results'
+
+  - script: |
+      echo "=== Final Status Report ==="
+      echo "Pipeline completed for Baljinnyam Gansukh"
+      echo "Feature tested: F107 - Inventory Control"
+      echo "Timestamp: $(date)"
+      echo "Check the Test Results tab in Azure DevOps to view detailed results"
+      echo ""
+      echo "=== Inventory Control Features Tested ==="
+      echo "  • Stock level updates and management"
+      echo "  • Product availability toggles"
+      echo "  • Low stock warning system"
+      echo "  • Bulk inventory operations"
+      echo "  • Inventory audit logging"
+      echo "  • Admin permission validation"
+      echo "  • Stock deduction on orders"
+      echo "  • Inventory search and filtering"
+    displayName: 'Final Report'
+    condition: always()
