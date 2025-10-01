@@ -1,7 +1,6 @@
 <?php
 /**
  * Admin User Management
- * Features 800-805: Manage user accounts
  */
 
 require_once '../../../includes/init.php';

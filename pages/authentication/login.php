@@ -3,7 +3,6 @@
  * User Login Page
  * Implements F101 - Login functionality
  * Story 102: Login with email and password
- * Story 103: Role-based system recognition
  */
 
 require_once '../../includes/init.php';

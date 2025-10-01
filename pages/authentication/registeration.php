@@ -2,7 +2,7 @@
 /**
  * User Registration Page
  * Implements F101 - Registration functionality
- * Story 101: Staff/Admin registration with email
+ * Story 101: registration with email
  */
 
 require_once '../../includes/init.php';
