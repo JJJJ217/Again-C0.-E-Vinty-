@@ -106,9 +106,11 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 
 ### Installation Steps
 
-1. **Clone/Download the project** to your XAMPP htdocs directory:
+1. **Download XAMPP:** ```https://www.apachefriends.org/download.html```
+
+1. **Clone/Download the project** and put to your XAMPP htdocs directory:
    ```
-   C:\xampp\htdocs\vinty-draft-webpage\
+   C:\xampp\htdocs\Again-C0.-E-Vinty-
    ```
 
 2. **Start XAMPP Services**:
@@ -131,8 +133,8 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 
 ### Demo Accounts
 The system includes a default admin account:
-- **Email**: admin@evinty.com
-- **Password**: admin123
+- **Email**: admin@evinty.com/admin@mail.com
+- **Password**: admin123/Admin123
 
 ### Test User Registration
 1. Navigate to the registration page
@@ -156,40 +158,6 @@ The system includes a default admin account:
 - **Session Security**: Secure session management, CSRF tokens
 - **Input Validation**: Comprehensive sanitization and validation
 - **SQL Injection Prevention**: Prepared statements throughout
-
-## 📊 Database Schema
-
-### Users Table
-- `user_id` (Primary Key)
-- `name`, `email`, `password`
-- `role` (customer, staff, admin)
-- `is_active`, `email_verified`
-- Timestamps and login tracking
-
-### User Profiles Table
-- `profile_id` (Primary Key)
-- `user_id` (Foreign Key)
-- Address and contact information
-- Personal details
-
-### Password Resets Table
-- `reset_id` (Primary Key)
-- `user_id` (Foreign Key)
-- `token`, `expires_at`, `used`
-
-## 🚀 Next Development Phase
-
-### Planned Features (MVP Continuation)
-1. **F104 - Product Filtering**: Product catalog with filtering and search
-2. **F110 - Shopping Cart**: Add to cart, quantity management
-3. **F109 - Shipping & Payment**: Checkout process
-4. **Admin Panel**: Product and user management for staff/admin
-
-### Development Roadmap
-1. **Phase 2**: Product Management System
-2. **Phase 3**: Shopping Cart and Checkout
-3. **Phase 4**: Order Management
-4. **Phase 5**: Admin Dashboard
 
 ## 🔧 Configuration
 
