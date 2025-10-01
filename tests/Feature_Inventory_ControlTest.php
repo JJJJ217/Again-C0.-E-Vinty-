@@ -2,8 +2,8 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * F107 Inventory Control Tests
- * User Story: "As an admin, I can manage stock levels and product availability"
+ *  F107 Inventory Control Tests
+ * User Story : "As an admin, I can manage inventory control"
  * Test cases for Baljinnyam Gansukh's inventory control functionality
  */
 final class Feature_Inventory_ControlTest extends TestCase

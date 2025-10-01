@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * User profile detail managament
+ * User profile information management test 
  * User Story: 302
  */
 
