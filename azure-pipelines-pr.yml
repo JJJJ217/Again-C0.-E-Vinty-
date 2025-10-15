@@ -14,19 +14,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  phpVersion: '8.1'
+  phpVersion: '8.4'
 
 steps:
-- script: |
-    echo "Setting up PHP $(phpVersion)"
-    sudo update-alternatives --set php /usr/bin/php$(phpVersion)
-    sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
-    sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
-    sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
-    sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
-    php -v
-  displayName: 'Configure PHP $(phpVersion)'
-
 - script: |
     echo "==================================="
     echo "Pull Request Validation Pipeline"
@@ -34,7 +24,11 @@ steps:
     echo "Target Branch: $(System.PullRequest.TargetBranch)"
     echo "Source Branch: $(System.PullRequest.SourceBranch)"
     echo "PR ID: $(System.PullRequest.PullRequestId)"
-  displayName: 'PR Information'
+    echo ""
+    echo "Verifying PHP environment..."
+    php -v
+    composer --version
+  displayName: 'PR Information & Environment Check'
 
 - script: |
     composer install --no-interaction --prefer-dist --optimize-autoloader

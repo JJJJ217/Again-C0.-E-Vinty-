@@ -8,21 +8,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  phpVersion: 8.1
+  phpVersion: 8.4
 
 jobs:
 - job: Michael_Sutjiato_Individual_Tests
   displayName: "Michael Sutjiato - Individual Test Run"
   steps:
   - script: |
-      echo "Setting up PHP $(phpVersion) for Michael Sutjiato's test suite"
-      sudo update-alternatives --set php /usr/bin/php$(phpVersion)
-      sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
-      sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
-      sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
-      sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
-      php -version
-    displayName: 'Configure PHP Environment'
+      echo "Verifying PHP environment for Michael Sutjiato's test suite"
+      php -v
+      composer --version
+    displayName: 'Verify PHP Environment'
 
   - script: |
       echo "Installing dependencies..."
