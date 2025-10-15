@@ -1,0 +1,68 @@
+# Azure DevOps PR Validation Pipeline
+# Runs on Pull Requests to ensure code quality before merging
+
+trigger: none
+
+pr:
+  branches:
+    include:
+      - dev
+      - prod
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  phpVersion: '8.1'
+
+steps:
+- task: UsePHPVersion@0
+  displayName: 'Setup PHP $(phpVersion)'
+  inputs:
+    versionSpec: '$(phpVersion)'
+
+- script: |
+    echo "==================================="
+    echo "Pull Request Validation Pipeline"
+    echo "==================================="
+    echo "Target Branch: $(System.PullRequest.TargetBranch)"
+    echo "Source Branch: $(System.PullRequest.SourceBranch)"
+    echo "PR ID: $(System.PullRequest.PullRequestId)"
+  displayName: 'PR Information'
+
+- script: |
+    composer install --no-interaction --prefer-dist --optimize-autoloader
+  displayName: 'Install Dependencies'
+
+- script: |
+    echo "Creating test configuration..."
+    mkdir -p config
+    echo "<?php define('TESTING', true); define('SITE_URL', 'http://localhost'); ?>" > config/config.php
+    echo "<?php class Database { public function __construct() {} public function connect() { return \$this; } public function beginTransaction() {} public function commit() {} public function rollBack() {} public function fetchAll(\$sql, \$params = []) { return []; } public function fetch(\$sql, \$params = []) { return null; } public function query(\$sql, \$params = []) { return true; } public function lastInsertId() { return 1; } } ?>" > config/database.php
+  displayName: 'Setup Test Environment'
+
+- script: |
+    ./vendor/bin/phpunit --configuration phpunit.xml \
+      --log-junit junit-pr-validation.xml \
+      --testdox --colors=never
+  displayName: 'Run All Test Suites'
+  continueOnError: false
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/junit-*.xml'
+    testRunTitle: 'PR Validation - All Tests'
+    failTaskOnFailedTests: true
+    publishRunAttachments: true
+  condition: always()
+
+- script: |
+    echo "==================================="
+    echo "PR Validation Complete"
+    echo "==================================="
+    echo "✅ All tests passed"
+    echo "✅ Code is ready for review"
+  displayName: 'Validation Summary'
