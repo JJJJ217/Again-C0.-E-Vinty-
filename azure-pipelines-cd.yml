@@ -24,9 +24,9 @@ variables:
   artifactName: 'againco-app'
   packagePath: '$(Build.ArtifactStagingDirectory)/app.zip'
   # Update these with your actual Azure resources
-  azureServiceConnection: 'Azure-AgainCo-Connection'
-  webAppNameDev: 'againco-ecommerce-dev'
-  webAppNameProd: 'againco-ecommerce-prod'
+  azureServiceConnection: 'Again&C0.E-vinty'
+  webAppNameDev: 'Again-CoE-Vinty'
+  # webAppNameProd: 'againco-ecommerce-prod'
 
 stages:
 # =============================================================================
