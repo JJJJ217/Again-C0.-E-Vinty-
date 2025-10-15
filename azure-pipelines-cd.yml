@@ -38,10 +38,14 @@ stages:
   - job: BuildJob
     displayName: 'Build and Package'
     steps:
-    - task: UsePHPVersion@0
-      displayName: 'Setup PHP $(phpVersion)'
-      inputs:
-        versionSpec: '$(phpVersion)'
+    - script: |
+        echo "Setting up PHP $(phpVersion)"
+        sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+        sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+        sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+        sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+        sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+      displayName: 'Configure PHP $(phpVersion)'
         
     - script: |
         echo "==================================="
@@ -128,10 +132,15 @@ stages:
   - job: RunTests
     displayName: 'Execute PHPUnit Test Suites'
     steps:
-    - task: UsePHPVersion@0
-      displayName: 'Setup PHP $(phpVersion)'
-      inputs:
-        versionSpec: '$(phpVersion)'
+    - script: |
+        echo "Setting up PHP $(phpVersion)"
+        sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+        sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+        sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+        sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+        sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+        php -v
+      displayName: 'Configure PHP $(phpVersion)'
 
     - script: |
         echo "Installing test dependencies..."
