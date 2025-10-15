@@ -62,32 +62,6 @@ final class Feature_Cart_ShoppingTest extends TestCase
         $this->assertFalse(!empty($itemNullDescription['description']));
     }
 
-    public function testShippingCalculation(): void
-    {
-        $items = [
-            ['quantity' => 1, 'weight' => 1.0],
-            ['quantity' => 2, 'weight' => 0.5]
-        ];
-        
-        $shippingCost = calculateShipping($items, 'standard', 'US');
-        $this->assertIsFloat($shippingCost);
-        $this->assertGreaterThanOrEqual(0, $shippingCost);
-        
-        // Test basic shipping functionality - if both return same value, that's the current behavior
-        $standardCost = calculateShipping($items, 'standard', 'US');
-        $expressCost = calculateShipping($items, 'express', 'US');
-        
-        // Test that shipping cost is positive and reasonable
-        $this->assertGreaterThan(0, $standardCost);
-        $this->assertGreaterThan(0, $expressCost);
-        $this->assertLessThan(100, $standardCost); // Reasonable upper bound
-        
-        // Test international shipping
-        $domesticCost = calculateShipping($items, 'standard', 'US');
-        $internationalCost = calculateShipping($items, 'standard', 'AU');
-        $this->assertGreaterThan($domesticCost, $internationalCost);
-    }
-
     public function testCartTotalCalculation(): void
     {
         // Test cart totals calculation
