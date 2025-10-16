@@ -21,7 +21,7 @@ $reset_data = null;
 // Validate token on page load
 if (empty($token)) {
     redirectWithMessage(
-        SITE_URL . '/pages/auth/forgot-password.php', 
+    SITE_URL . '/pages/authentication/forgot-password.php', 
         'Invalid reset link. Please request a new password reset.', 
         'error'
     );
@@ -39,7 +39,7 @@ try {
     
     if (!$reset_data) {
         redirectWithMessage(
-            SITE_URL . '/pages/auth/forgot-password.php', 
+            SITE_URL . '/pages/authentication/forgot-password.php', 
             'This reset link has expired or is invalid. Please request a new password reset.', 
             'error'
         );
@@ -47,7 +47,7 @@ try {
 } catch (Exception $e) {
     error_log("Reset token validation error: " . $e->getMessage());
     redirectWithMessage(
-        SITE_URL . '/pages/auth/forgot-password.php', 
+    SITE_URL . '/pages/authentication/forgot-password.php', 
         'An error occurred. Please request a new password reset.', 
         'error'
     );

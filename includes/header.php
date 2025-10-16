@@ -29,10 +29,10 @@ $current_user = getCurrentUser();
                     <a href="<?= SITE_URL ?>/pages/user/cart.php" class="cart-link">
                         Cart <span class="cart-count"><?= getCartCount() ?></span>
                     </a>
-                    <a href="<?= SITE_URL ?>/pages/auth/logout.php">Logout</a>
+                    <a href="<?= SITE_URL ?>/pages/authentication/logout.php">Logout</a>
                 <?php else: ?>
-                    <a href="<?= SITE_URL ?>/pages/auth/login.php">Login</a>
-                    <a href="<?= SITE_URL ?>/pages/auth/register.php">Register</a>
+                    <a href="<?= SITE_URL ?>/pages/authentication/login.php">Login</a>
+                    <a href="<?= SITE_URL ?>/pages/authentication/registeration.php">Register</a>
                 <?php endif; ?>
             </div>
         </div>

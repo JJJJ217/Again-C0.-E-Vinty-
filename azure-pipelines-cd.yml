@@ -26,7 +26,7 @@ variables:
   # Update these with your actual Azure resources
   azureServiceConnection: 'Again&Co.E-vinty'
   webAppNameDev: 'Again-CoE-Vinty'
-  webAppNameProd: 'Again-CoE-Vinty'
+  webAppNameProd: 'againco-ecommerce-prod'
 
 stages:
 # =============================================================================
@@ -89,6 +89,8 @@ stages:
           !azure-pipelines*.yml
           !phpunit.xml
           !*.md
+          !web.config
+          !nginx.conf
           !vendor/**/.git/**
         targetFolder: '$(Build.ArtifactStagingDirectory)/app'
         cleanTargetFolder: true
@@ -236,49 +238,7 @@ stages:
       condition: always()
 
 # =============================================================================
-# STAGE 3: DEPLOY TO DEVELOPMENT
-# =============================================================================
-- stage: Deploy_Development
-  displayName: '🚀 Deploy to Development'
-  dependsOn: Test
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-  jobs:
-  - deployment: DeployDev
-    displayName: 'Deploy to Dev Environment'
-    environment: 'development'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
-            inputs:
-              buildType: 'current'
-              artifactName: '$(artifactName)'
-              targetPath: '$(Pipeline.Workspace)/$(artifactName)'
-
-          - task: AzureWebApp@1
-            displayName: 'Deploy to Azure Web App (Dev)'
-            inputs:
-              azureSubscription: '$(azureServiceConnection)'
-              appType: 'webAppLinux'
-              appName: '$(webAppNameDev)'
-              package: '$(Pipeline.Workspace)/$(artifactName)/app.zip'
-              runtimeStack: 'PHP|8.4'
-              startUpCommand: ''
-
-          - script: |
-              echo "==================================="
-              echo "✅ Development Deployment Successful"
-              echo "==================================="
-              echo "Environment: Development"
-              echo "URL: https://$(webAppNameDev).azurewebsites.net"
-              echo "Branch: dev"
-              echo "Commit: $(Build.SourceVersion)"
-            displayName: 'Dev Deployment Summary'
-
-# =============================================================================
-# STAGE 4: DEPLOY TO PRODUCTION (CONTINUOUS DEPLOYMENT)
+# STAGE 3: DEPLOY TO PRODUCTION (CONTINUOUS DEPLOYMENT)
 # =============================================================================
 - stage: Deploy_Production
   displayName: '🎯 Deploy to Production (CD)'
@@ -307,7 +267,6 @@ stages:
               appName: '$(webAppNameProd)'
               package: '$(Pipeline.Workspace)/$(artifactName)/app.zip'
               runtimeStack: 'PHP|8.4'
-              startUpCommand: ''
               deploymentMethod: 'zipDeploy'
 
           - script: |
@@ -325,28 +284,20 @@ stages:
             displayName: 'Production Deployment Summary'
 
 # =============================================================================
-# STAGE 5: SMOKE TEST (POST-DEPLOYMENT)
+# STAGE 4: SMOKE TEST (POST-DEPLOYMENT)
 # =============================================================================
 - stage: Smoke_Test
   displayName: '🔥 Smoke Test'
-  dependsOn: 
-    - Deploy_Development
-    - Deploy_Production
-  condition: or(succeeded('Deploy_Development'), succeeded('Deploy_Production'))
+  dependsOn: Deploy_Production
+  condition: succeeded('Deploy_Production')
   jobs:
   - job: SmokeTest
     displayName: 'Run Post-Deployment Smoke Tests'
     steps:
     - script: |
-        echo "Running smoke tests..."
-        # Determine which environment to test
-        if [ "$(Build.SourceBranch)" = "refs/heads/prod" ]; then
-          URL="https://$(webAppNameProd).azurewebsites.net"
-          ENV="Production"
-        else
-          URL="https://$(webAppNameDev).azurewebsites.net"
-          ENV="Development"
-        fi
+        echo "Running smoke tests for Production deployment..."
+        URL="https://$(webAppNameProd).azurewebsites.net"
+        ENV="Production"
         
         echo "Testing $ENV environment: $URL"
         
@@ -360,5 +311,5 @@ stages:
           echo "⚠️ Warning: Site returned HTTP $HTTP_CODE"
           exit 0  # Don't fail the pipeline for smoke test
         fi
-      displayName: 'Verify Deployment Health'
+      displayName: 'Verify Production Deployment Health'
       continueOnError: true

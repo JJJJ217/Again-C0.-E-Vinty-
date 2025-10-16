@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 
                 // Create reset link
-                $reset_link = SITE_URL . "/pages/auth/reset-password.php?token=" . $reset_token;
+                $reset_link = SITE_URL . "/pages/authentication/reset-password.php?token=" . $reset_token;
                 
                 // Email content
                 $subject = "Password Reset Request - Again&Co";

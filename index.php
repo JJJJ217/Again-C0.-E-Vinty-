@@ -56,7 +56,7 @@ $page_description = "Discover unique vintage items at Again&Co. Quality pre-owne
                         <div class="hero-actions mt-3">
                             <a href="pages/products/catalog.php" class="btn btn-primary">Shop Now</a>
                             <?php if (!isLoggedIn()): ?>
-                                <a href="pages/auth/register.php" class="btn btn-secondary">Join Today</a>
+                                <a href="pages/authentication/registeration.php" class="btn btn-secondary">Join Today</a>
                             <?php endif; ?>
                         </div>
                     </div>

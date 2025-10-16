@@ -21,7 +21,7 @@
                 <a href="<?= SITE_URL ?>/pages/about.php">About Us</a>
                 <a href="<?= SITE_URL ?>/pages/contact.php">Contact</a>
                 <?php if (!isLoggedIn()): ?>
-                    <a href="<?= SITE_URL ?>/pages/auth/register.php">Join Us</a>
+                    <a href="<?= SITE_URL ?>/pages/authentication/registeration.php">Join Us</a>
                 <?php endif; ?>
             </div>
             
