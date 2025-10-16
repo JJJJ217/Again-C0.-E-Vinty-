@@ -50,7 +50,7 @@ function hasRole($required_roles) {
  */
 function requireLogin() {
     if (!isLoggedIn()) {
-        header('Location: ' . SITE_URL . '/pages/auth/login.php');
+    header('Location: ' . SITE_URL . '/pages/authentication/login.php');
         exit();
     }
 }
@@ -141,7 +141,7 @@ function checkSessionTimeout() {
     if (isLoggedIn() && isset($_SESSION['login_time'])) {
         if (time() - $_SESSION['login_time'] > SESSION_LIFETIME) {
             logoutUser();
-            header('Location: ' . SITE_URL . '/pages/auth/login.php?timeout=1');
+            header('Location: ' . SITE_URL . '/pages/authentication/login.php?timeout=1');
             exit();
         }
     }

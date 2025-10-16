@@ -11,7 +11,7 @@ define('DB_PASS', 'your_db_password');
 define('DB_NAME', 'evinty_db');
 
 // Site Configuration
-define('SITE_URL', 'http://localhost/vinty-draft-webpage');
+define('SITE_URL', 'http://localhost/Again-C0.-E-Vinty-');
 define('SITE_NAME', 'Again&Co');
 define('SITE_EMAIL', 'admin@yourdomain.com');
 

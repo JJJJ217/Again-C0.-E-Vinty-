@@ -19,7 +19,7 @@ if (isLoggedIn()) {
     
     // Redirect to login page with success message
     redirectWithMessage(
-        SITE_URL . '/pages/auth/login.php?logged_out=1', 
+    SITE_URL . '/pages/authentication/login.php?logged_out=1', 
         'You have been successfully logged out.', 
         'success'
     );
