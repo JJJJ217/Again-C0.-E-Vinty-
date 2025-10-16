@@ -97,37 +97,31 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
     └── userAuthTest             # Jiaming Huang
 ```
 
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- XAMPP (or similar Apache + MySQL + PHP environment)
-- PHP 8.0 or higher
-- MySQL 8.0 or higher
-
-### Installation Steps
+## 🔧 Configuration and Installation Steps
 
 1. **Download XAMPP:** ```https://www.apachefriends.org/download.html```
 
-1. **Clone/Download the project** and put to your XAMPP htdocs directory:
+2. **Clone/Download the project** and put to your XAMPP htdocs directory:
    ```
    C:\xampp\htdocs\Again-C0.-E-Vinty-
    ```
 
-2. **Start XAMPP Services**:
+3. **Start XAMPP Services**:
    - Start Apache
    - Start MySQL
 
-3. **Create Database**:
+4. **Configure Database Connection**:
+   - Add the config.php & database.php under config folder
+   - copy the config.sample.php into config.php
+   - 
+
+5. **Create Database**:
    - Open phpMyAdmin (http://localhost/phpmyadmin)
    - Create a new database named `evinty_ecommerce`
    - Import the database schema from `database/schema.sql`
 
-4. **Configure Database Connection**:
-   - Edit `config/config.php` if needed
-   - Default settings work with standard XAMPP installation
-
-5. **Access the Application**:
-   - Open browser and navigate to: `http://localhost/vinty-draft-webpage`
+6. **Access the Application**:
+   - Open browser and navigate to: `http://localhost/Again-C0.-E-Vinty-`
 
 ## 🧪 Testing
 
@@ -159,25 +153,6 @@ The system includes a default admin account:
 - **Input Validation**: Comprehensive sanitization and validation
 - **SQL Injection Prevention**: Prepared statements throughout
 
-## 🔧 Configuration
-
-### Email Settings
-Configure email settings in `config/config.php` for password reset functionality:
-- Update `SITE_EMAIL` with your email address
-- Configure SMTP settings if needed
-
-### Development vs Production
-- Disable error reporting in production
-- Update database credentials
-- Configure proper email settings
-- Set appropriate file permissions
-
-## 📝 API Endpoints (Future)
-
-The application is designed to support AJAX functionality:
-- `/api/cart.php` - Shopping cart operations
-- `/api/search.php` - Product search
-- `/api/user.php` - User management
 
 ## 🤝 Contributing
 
