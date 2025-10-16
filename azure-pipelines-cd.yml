@@ -89,6 +89,7 @@ stages:
           !azure-pipelines*.yml
           !phpunit.xml
           !*.md
+          !web.config
           !vendor/**/.git/**
         targetFolder: '$(Build.ArtifactStagingDirectory)/app'
         cleanTargetFolder: true
@@ -265,7 +266,6 @@ stages:
               appName: '$(webAppNameDev)'
               package: '$(Pipeline.Workspace)/$(artifactName)/app.zip'
               runtimeStack: 'PHP|8.4'
-              startUpCommand: 'bash /home/site/wwwroot/startup.sh'
 
           - script: |
               echo "==================================="
@@ -307,7 +307,6 @@ stages:
               appName: '$(webAppNameProd)'
               package: '$(Pipeline.Workspace)/$(artifactName)/app.zip'
               runtimeStack: 'PHP|8.4'
-              startUpCommand: 'bash /home/site/wwwroot/startup.sh'
               deploymentMethod: 'zipDeploy'
 
           - script: |
