@@ -4,6 +4,15 @@
  * Handles user authentication and session security
  */
 
+// Configure session to use a local directory with proper permissions
+$session_dir = __DIR__ . '/../logs';
+if (!is_dir($session_dir)) {
+    mkdir($session_dir, 0777, true);
+}
+
+// Set session save path to logs directory
+ini_set('session.save_path', $session_dir);
+
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
