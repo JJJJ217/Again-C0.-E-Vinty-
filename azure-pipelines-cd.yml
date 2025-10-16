@@ -5,9 +5,7 @@
 trigger:
   branches:
     include:
-      - dev
       - prod
-      - main
 
 pr:
   branches:
@@ -25,7 +23,6 @@ variables:
   packagePath: '$(Build.ArtifactStagingDirectory)/app.zip'
   # Update these with your actual Azure resources
   azureServiceConnection: 'Again&Co.E-vinty'
-  webAppNameDev: 'Again-CoE-Vinty'
   webAppNameProd: 'Again-CoE-Vinty'
 
 stages:
