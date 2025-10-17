@@ -6,6 +6,7 @@ trigger:
   branches:
     include:
       - prod
+      - main
 
 pr:
   branches:
@@ -23,6 +24,7 @@ variables:
   packagePath: '$(Build.ArtifactStagingDirectory)/app.zip'
   # Update these with your actual Azure resources
   azureServiceConnection: 'Again&Co.E-vinty'
+  webAppNameDev: 'Again-CoE-Vinty-Dev'
   webAppNameProd: 'Again-CoE-Vinty'
 
 stages:
@@ -235,7 +237,53 @@ stages:
       condition: always()
 
 # =============================================================================
-# STAGE 3: DEPLOY TO PRODUCTION (CONTINUOUS DEPLOYMENT)
+# STAGE 3: DEPLOY TO DEVELOPMENT (MAIN BRANCH)
+# =============================================================================
+- stage: Deploy_Development
+  displayName: '🚀 Deploy to Development (Main)'
+  dependsOn: Test
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployDev
+    displayName: 'Deploy to Development Environment'
+    environment: 'development'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download Build Artifact'
+            inputs:
+              buildType: 'current'
+              artifactName: '$(artifactName)'
+              targetPath: '$(Pipeline.Workspace)/$(artifactName)'
+
+          - task: AzureWebApp@1
+            displayName: 'Deploy to Azure Web App (Development)'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              appType: 'webAppLinux'
+              appName: '$(webAppNameDev)'
+              package: '$(Pipeline.Workspace)/$(artifactName)/app.zip'
+              runtimeStack: 'PHP|8.4'
+              deploymentMethod: 'zipDeploy'
+
+          - script: |
+              echo "==================================="
+              echo "✅ DEVELOPMENT DEPLOYMENT SUCCESSFUL"
+              echo "==================================="
+              echo "🌐 Environment: DEVELOPMENT"
+              echo "🔗 URL: https://$(webAppNameDev).azurewebsites.net"
+              echo "🔀 Branch: main"
+              echo "📝 Commit: $(Build.SourceVersion)"
+              echo "👤 Author: $(Build.RequestedFor)"
+              echo "⏰ Time: $(Build.BuildNumber)"
+              echo "==================================="
+              echo "✨ Development Deployment Completed!"
+            displayName: 'Development Deployment Summary'
+
+# =============================================================================
+# STAGE 4: DEPLOY TO PRODUCTION (CONTINUOUS DEPLOYMENT)
 # =============================================================================
 - stage: Deploy_Production
   displayName: '🎯 Deploy to Production (CD)'
@@ -281,20 +329,29 @@ stages:
             displayName: 'Production Deployment Summary'
 
 # =============================================================================
-# STAGE 4: SMOKE TEST (POST-DEPLOYMENT)
+# STAGE 5: SMOKE TEST (POST-DEPLOYMENT)
 # =============================================================================
 - stage: Smoke_Test
   displayName: '🔥 Smoke Test'
-  dependsOn: Deploy_Production
-  condition: succeeded('Deploy_Production')
+  dependsOn: 
+    - Deploy_Development
+    - Deploy_Production
+  condition: or(succeeded('Deploy_Development'), succeeded('Deploy_Production'))
   jobs:
   - job: SmokeTest
     displayName: 'Run Post-Deployment Smoke Tests'
     steps:
     - script: |
-        echo "Running smoke tests for Production deployment..."
-        URL="https://$(webAppNameProd).azurewebsites.net"
-        ENV="Production"
+        echo "Running smoke tests for deployment..."
+        
+        # Determine which environment to test
+        if [ "$(Build.SourceBranch)" = "refs/heads/prod" ]; then
+          URL="https://$(webAppNameProd).azurewebsites.net"
+          ENV="Production"
+        else
+          URL="https://$(webAppNameDev).azurewebsites.net"
+          ENV="Development"
+        fi
         
         echo "Testing $ENV environment: $URL"
         
@@ -308,5 +365,5 @@ stages:
           echo "⚠️ Warning: Site returned HTTP $HTTP_CODE"
           exit 0  # Don't fail the pipeline for smoke test
         fi
-      displayName: 'Verify Production Deployment Health'
+      displayName: 'Verify Deployment Health'
       continueOnError: true
