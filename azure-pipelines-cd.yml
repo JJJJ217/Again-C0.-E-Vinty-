@@ -5,12 +5,14 @@
 trigger:
   branches:
     include:
+      - dev
       - prod
       - main
 
 pr:
   branches:
     include:
+      - dev
       - prod
       - main
 
@@ -236,12 +238,12 @@ stages:
       condition: always()
 
 # =============================================================================
-# STAGE 3: DEPLOY TO DEVELOPMENT (MAIN BRANCH)
+# STAGE 3: DEPLOY TO DEVELOPMENT (DEV BRANCH)
 # =============================================================================
 - stage: Deploy_Development
-  displayName: '🚀 Deploy to Development (Main)'
+  displayName: '🚀 Deploy to Development (Dev)'
   dependsOn: Test
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
   jobs:
   - deployment: DeployDev
     displayName: 'Deploy to Development Environment'
@@ -273,7 +275,7 @@ stages:
               echo "==================================="
               echo "🌐 Environment: DEVELOPMENT"
               echo "🔗 URL: https://$(webAppNameDev).azurewebsites.net"
-              echo "🔀 Branch: main"
+              echo "🔀 Branch: dev"
               echo "📝 Commit: $(Build.SourceVersion)"
               echo "👤 Author: $(Build.RequestedFor)"
               echo "⏰ Time: $(Build.BuildNumber)"
