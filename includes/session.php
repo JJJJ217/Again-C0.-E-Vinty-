@@ -4,6 +4,15 @@
  * Handles user authentication and session security
  */
 
+// Configure session to use a local directory with proper permissions
+$session_dir = __DIR__ . '/../logs';
+if (!is_dir($session_dir)) {
+    mkdir($session_dir, 0777, true);
+}
+
+// Set session save path to logs directory
+ini_set('session.save_path', $session_dir);
+
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -50,7 +59,7 @@ function hasRole($required_roles) {
  */
 function requireLogin() {
     if (!isLoggedIn()) {
-        header('Location: ' . SITE_URL . '/pages/auth/login.php');
+    header('Location: ' . SITE_URL . '/pages/authentication/login.php');
         exit();
     }
 }
@@ -141,7 +150,7 @@ function checkSessionTimeout() {
     if (isLoggedIn() && isset($_SESSION['login_time'])) {
         if (time() - $_SESSION['login_time'] > SESSION_LIFETIME) {
             logoutUser();
-            header('Location: ' . SITE_URL . '/pages/auth/login.php?timeout=1');
+            header('Location: ' . SITE_URL . '/pages/authentication/login.php?timeout=1');
             exit();
         }
     }

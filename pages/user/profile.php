@@ -24,7 +24,7 @@ try {
     );
     
     if (!$user_profile) {
-        redirectWithMessage(SITE_URL . '/pages/auth/login.php', 'Session expired. Please log in again.', 'error');
+    redirectWithMessage(SITE_URL . '/pages/authentication/login.php', 'Session expired. Please log in again.', 'error');
     }
 } catch (Exception $e) {
     error_log("Profile fetch error: " . $e->getMessage());

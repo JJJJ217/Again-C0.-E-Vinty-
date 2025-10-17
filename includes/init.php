@@ -28,12 +28,11 @@ date_default_timezone_set('Australia/Sydney');
 // Initialize database connection
 try {
     $db = new Database();
-    // Ensure database exists
-    $db->createDatabaseIfNotExists();
     // Test connection
     $db->connect();
 } catch (Exception $e) {
     // In production, log this error and show a user-friendly message
-    die('Database connection failed. Please try again later.');
+    error_log("Database connection error: " . $e->getMessage());
+    die('Database connection failed: ' . $e->getMessage());
 }
 ?>
