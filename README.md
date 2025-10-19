@@ -182,4 +182,4 @@ For technical issues:
 
 ---
 
-**Built with ❤️ for vintage lovers by the Again&Co Team**
+**Built with ❤️ for vintage lovers by the Again&Co Team.**
