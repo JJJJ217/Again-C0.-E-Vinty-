@@ -5,12 +5,14 @@
 trigger:
   branches:
     include:
+      - dev
       - prod
       - main
 
 pr:
   branches:
     include:
+      - dev
       - prod
       - main
 
@@ -87,8 +89,6 @@ stages:
           !azure-pipelines*.yml
           !phpunit.xml
           !*.md
-          !web.config
-          !nginx.conf
           !vendor/**/.git/**
         targetFolder: '$(Build.ArtifactStagingDirectory)/app'
         cleanTargetFolder: true
