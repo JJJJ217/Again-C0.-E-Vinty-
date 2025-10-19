@@ -89,8 +89,6 @@ stages:
           !azure-pipelines*.yml
           !phpunit.xml
           !*.md
-          !web.config
-          !nginx.conf
           !vendor/**/.git/**
         targetFolder: '$(Build.ArtifactStagingDirectory)/app'
         cleanTargetFolder: true
