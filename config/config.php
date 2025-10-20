@@ -9,11 +9,22 @@ $isAzure = str_contains($_SERVER['HTTP_HOST'] ?? '', 'azurewebsites.net');
 
 // DATABASE CONFIGURATION
 // Uses environment variables on Azure, defaults to localhost for dev
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'evinty_ecommerce');
-define('DB_USER', getenv('DB_USER') ?: 'root');
-define('DB_PASS', getenv('DB_PASS') ?: '');
+$db_host = getenv('DB_HOST');
+$db_name = getenv('DB_NAME');
+$db_user = getenv('DB_USER');
+$db_pass = getenv('DB_PASS');
+
+// Fallback to defaults if env vars not set
+define('DB_HOST', $db_host ?: 'localhost');
+define('DB_NAME', $db_name ?: 'evinty_ecommerce');
+define('DB_USER', $db_user ?: 'root');
+define('DB_PASS', $db_pass ?: '');
 define('DB_CHARSET', 'utf8mb4');
+
+// Debug: Log configuration for Azure troubleshooting
+if ($isAzure) {
+    error_log('Azure DB Config - Host: ' . DB_HOST . ', DB: ' . DB_NAME . ', User: ' . DB_USER);
+}
 
 // SITE CONFIGURATION
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
