@@ -25,7 +25,7 @@ variables:
   packagePath: '$(Build.ArtifactStagingDirectory)/app.zip'
   # Update these with your actual Azure resources
   azureServiceConnection: 'Again&Co.E-vinty'
-  webAppNameDev: 'Again-CoE-Vinty'
+  webAppNameDev: 'AgainCo2'
   webAppNameProd: 'Again-CoE-Vinty'
   appType: 'webAppLinux'  # Linux-based App Service with PHP and nginx
 
