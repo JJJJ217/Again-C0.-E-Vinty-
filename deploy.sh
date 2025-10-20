@@ -1,16 +1,29 @@
 #!/bin/bash
 
-# Azure App Service deployment script
-echo "Starting deployment..."
+# Azure App Service Linux deployment script
+echo "Starting deployment for Linux App Service..."
 
-# Copy files to the web root
-if [ -d "/home/site/wwwroot" ]; then
-    echo "Deployment complete!"
-else
-    echo "Warning: /home/site/wwwroot not found"
+# Copy custom nginx config if it exists
+if [ -f "/home/site/wwwroot/default" ]; then
+    echo "Copying custom nginx configuration..."
+    cp /home/site/wwwroot/default /etc/nginx/sites-available/default
+    nginx -t && nginx -s reload
+    echo "Nginx configuration updated"
 fi
 
-# Ensure proper permissions
-chmod -R 755 /home/site/wwwroot || true
+# Set proper permissions
+if [ -d "/home/site/wwwroot/logs" ]; then
+    chmod -R 777 /home/site/wwwroot/logs
+    echo "Logs directory permissions set"
+fi
 
-echo "Deployment script finished"
+# Ensure composer dependencies are installed
+if [ -f "/home/site/wwwroot/composer.json" ]; then
+    cd /home/site/wwwroot
+    if [ ! -d "vendor" ]; then
+        echo "Installing composer dependencies..."
+        composer install --no-dev --optimize-autoloader
+    fi
+fi
+
+echo "Deployment complete!"

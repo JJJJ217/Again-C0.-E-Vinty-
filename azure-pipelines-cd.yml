@@ -27,7 +27,7 @@ variables:
   azureServiceConnection: 'Again&Co.E-vinty'
   webAppNameDev: 'Again-CoE-Vinty'
   webAppNameProd: 'Again-CoE-Vinty'
-  appType: 'webApp'  # Windows-based App Service with IIS and web.config
+  appType: 'webAppLinux'  # Linux-based App Service with PHP 8.4 and nginx
 
 stages:
 # =============================================================================
