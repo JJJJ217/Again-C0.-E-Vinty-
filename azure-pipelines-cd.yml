@@ -78,6 +78,13 @@ stages:
         targetFolder: '$(Build.ArtifactStagingDirectory)/app'
         cleanTargetFolder: true
 
+    - script: |
+        echo "Setting up configuration files from samples..."
+        cp $(Build.ArtifactStagingDirectory)/app/config/config.sample.php $(Build.ArtifactStagingDirectory)/app/config/config.php
+        cp $(Build.ArtifactStagingDirectory)/app/config/database.sample.php $(Build.ArtifactStagingDirectory)/app/config/database.php
+        echo "✓ Configuration files created from samples"
+      displayName: 'Setup Configuration Files'
+
     - task: ArchiveFiles@2
       displayName: 'Create Deployment Package'
       inputs:

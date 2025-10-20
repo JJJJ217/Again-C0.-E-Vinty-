@@ -14,6 +14,14 @@ $db_name = getenv('DB_NAME');
 $db_user = getenv('DB_USER');
 $db_pass = getenv('DB_PASS');
 
+// Log what we're reading
+error_log('=== CONFIG DEBUG ===');
+error_log('Is Azure: ' . ($isAzure ? 'YES' : 'NO'));
+error_log('DB_HOST from env: ' . ($db_host !== false ? $db_host : 'NOT SET'));
+error_log('DB_NAME from env: ' . ($db_name !== false ? $db_name : 'NOT SET'));
+error_log('DB_USER from env: ' . ($db_user !== false ? $db_user : 'NOT SET'));
+error_log('DB_PASS from env: ' . ($db_pass !== false ? '***' : 'NOT SET'));
+
 // Fallback to defaults if env vars not set
 define('DB_HOST', $db_host ?: 'localhost');
 define('DB_NAME', $db_name ?: 'evinty_ecommerce');
@@ -23,7 +31,10 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Debug: Log configuration for Azure troubleshooting
 if ($isAzure) {
+    error_log('✓ Using Azure configuration');
     error_log('Azure DB Config - Host: ' . DB_HOST . ', DB: ' . DB_NAME . ', User: ' . DB_USER);
+} else {
+    error_log('✓ Using Local development configuration');
 }
 
 // SITE CONFIGURATION
