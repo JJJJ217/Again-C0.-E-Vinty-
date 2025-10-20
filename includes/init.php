@@ -31,8 +31,17 @@ try {
     // Test connection
     $db->connect();
 } catch (Exception $e) {
-    // In production, log this error and show a user-friendly message
+    // Log the error with details
     error_log("Database connection error: " . $e->getMessage());
-    die('Database connection failed: ' . $e->getMessage());
+    error_log("DB Config - Host: " . DB_HOST . ", DB: " . DB_NAME . ", User: " . DB_USER);
+    
+    // Don't kill the app - let pages handle database unavailability gracefully
+    // Pages that need DB will catch their own errors
+    $db = null; // Set to null so pages can check if connection is available
+    
+    // Only die in development mode for debugging
+    if (ENVIRONMENT === 'development') {
+        die('<h1>Database Connection Failed</h1><p>' . htmlspecialchars($e->getMessage()) . '</p>');
+    }
 }
 ?>

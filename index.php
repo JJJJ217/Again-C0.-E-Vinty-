@@ -7,13 +7,16 @@
 require_once 'includes/init.php';
 
 // Get featured products
-try {
-    $featured_products = $db->fetchAll(
-        "SELECT * FROM products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8"
-    );
-} catch (Exception $e) {
-    $featured_products = [];
-    error_log("Failed to fetch featured products: " . $e->getMessage());
+$featured_products = [];
+if ($db !== null) {
+    try {
+        $featured_products = $db->fetchAll(
+            "SELECT * FROM products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8"
+        );
+    } catch (Exception $e) {
+        $featured_products = [];
+        error_log("Failed to fetch featured products: " . $e->getMessage());
+    }
 }
 
 $page_title = "Welcome to Again&Co - Again&Co Vintage Collection";
