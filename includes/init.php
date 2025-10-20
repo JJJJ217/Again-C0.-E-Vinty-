@@ -30,19 +30,9 @@ try {
     $db = new Database();
     // Test connection
     $db->connect();
-    error_log("✓ Application initialized successfully");
 } catch (Exception $e) {
     // In production, log this error and show a user-friendly message
-    $error_msg = "Database connection error: " . $e->getMessage();
-    error_log("✗ " . $error_msg);
-    
-    // Don't die - allow page to load with database error message
-    http_response_code(503);
-    echo "<!DOCTYPE html><html><head><title>Service Unavailable</title></head>";
-    echo "<body><h1>Service Unavailable</h1>";
-    echo "<p>Database connection failed. Please try again later.</p>";
-    echo "<pre>" . htmlspecialchars($error_msg) . "</pre>";
-    echo "</body></html>";
-    exit;
+    error_log("Database connection error: " . $e->getMessage());
+    die('Database connection failed: ' . $e->getMessage());
 }
 ?>

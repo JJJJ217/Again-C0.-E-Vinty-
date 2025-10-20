@@ -78,13 +78,6 @@ stages:
         targetFolder: '$(Build.ArtifactStagingDirectory)/app'
         cleanTargetFolder: true
 
-    - script: |
-        echo "Setting up configuration files from samples..."
-        cp $(Build.ArtifactStagingDirectory)/app/config/config.sample.php $(Build.ArtifactStagingDirectory)/app/config/config.php
-        cp $(Build.ArtifactStagingDirectory)/app/config/database.sample.php $(Build.ArtifactStagingDirectory)/app/config/database.php
-        echo "✓ Configuration files created from samples"
-      displayName: 'Setup Configuration Files'
-
     - task: ArchiveFiles@2
       displayName: 'Create Deployment Package'
       inputs:
@@ -258,25 +251,6 @@ stages:
               package: '$(Pipeline.Workspace)/$(artifactName)/app.zip'
               deploymentMethod: 'zipDeploy'
 
-          - task: AzureCLI@2
-            displayName: 'Configure Development App Settings'
-            inputs:
-              azureSubscription: '$(azureServiceConnection)'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                echo "Setting environment variables for database connection..."
-                az webapp config appsettings set \
-                  --resource-group Again-CoE-Vinty-rg \
-                  --name $(webAppNameDev) \
-                  --settings \
-                    DB_HOST="again-co.mysql.database.azure.com" \
-                    DB_USER="Jiaming" \
-                    DB_PASS="Jiaming217" \
-                    DB_NAME="evinty_ecommerce" \
-                    WEBSITES_ENABLE_APP_SERVICE_STORAGE=true
-                echo "✓ Development app settings configured"
-
           - script: |
               echo "==================================="
               echo "✅ DEVELOPMENT DEPLOYMENT SUCCESSFUL"
@@ -321,25 +295,6 @@ stages:
               appName: '$(webAppNameProd)'
               package: '$(Pipeline.Workspace)/$(artifactName)/app.zip'
               deploymentMethod: 'zipDeploy'
-
-          - task: AzureCLI@2
-            displayName: 'Configure Production App Settings'
-            inputs:
-              azureSubscription: '$(azureServiceConnection)'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                echo "Setting environment variables for database connection..."
-                az webapp config appsettings set \
-                  --resource-group Again-CoE-Vinty-rg \
-                  --name $(webAppNameProd) \
-                  --settings \
-                    DB_HOST="again-co.mysql.database.azure.com" \
-                    DB_USER="Jiaming" \
-                    DB_PASS="Jiaming217" \
-                    DB_NAME="evinty_ecommerce" \
-                    WEBSITES_ENABLE_APP_SERVICE_STORAGE=true
-                echo "✓ Production app settings configured"
 
           - script: |
               echo "==================================="
