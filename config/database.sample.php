@@ -27,7 +27,17 @@ class Database {
     public function connect() {
         if ($this->pdo === null) {
             try {
-                // For Azure MySQL, append SSL requirement
+                // For Azure MySQL, we need to use username@servername format
+                $username = $this->username;
+                if (str_contains($this->host, 'mysql.database.azure.com') && !str_contains($username, '@')) {
+                    $servername = explode('.', $this->host)[0]; // Extract server name
+                    $username = $username . '@' . $servername;
+                }
+                
+                error_log("Attempting database connection to: " . $this->host);
+                error_log("Database: " . $this->dbname);
+                error_log("Username format: " . $username);
+                
                 $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset={$this->charset}";
                 
                 $options = [
@@ -38,11 +48,7 @@ class Database {
                     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
                 ];
                 
-                error_log("Attempting database connection to: " . $this->host);
-                error_log("Database: " . $this->dbname);
-                error_log("Username: " . $this->username);
-                
-                $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
+                $this->pdo = new PDO($dsn, $username, $this->password, $options);
                 
                 error_log("✓ Database connection successful!");
                 
