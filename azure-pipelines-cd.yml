@@ -61,22 +61,6 @@ stages:
         echo "Dependencies installed successfully!"
       displayName: 'Install Composer Dependencies'
 
-    - script: |
-        echo "Creating production configuration files..."
-        mkdir -p config
-        # Create sample config for Azure deployment
-        echo "<?php
-        // Azure Production Configuration
-        define('SITE_URL', getenv('SITE_URL') ?: 'https://$(webAppNameProd).azurewebsites.net');
-        define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-        define('DB_NAME', getenv('DB_NAME') ?: 'evinty_ecommerce');
-        define('DB_USER', getenv('DB_USER') ?: 'root');
-        define('DB_PASS', getenv('DB_PASS') ?: '');
-        define('ENVIRONMENT', getenv('ENVIRONMENT') ?: 'production');
-        ?>" > config/config.php
-        echo "Configuration files created!"
-      displayName: 'Create Configuration Files'
-
     - task: CopyFiles@2
       displayName: 'Stage Application Files'
       inputs:
