@@ -32,22 +32,7 @@ try {
     $db->connect();
 } catch (Exception $e) {
     // In production, log this error and show a user-friendly message
-    $errorMsg = "Database connection error: " . $e->getMessage();
-    error_log($errorMsg);
-    
-    // Log environment info for debugging
-    error_log("DB_HOST: " . (getenv('DB_HOST') ?: 'NOT SET (localhost fallback)'));
-    error_log("DB_NAME: " . (getenv('DB_NAME') ?: 'NOT SET (evinty_ecommerce fallback)'));
-    error_log("DB_USER: " . (getenv('DB_USER') ?: 'NOT SET (root fallback)'));
-    error_log("Environment: " . ENVIRONMENT);
-    
-    // Only die if in development mode
-    if (ENVIRONMENT === 'development') {
-        die($errorMsg);
-    } else {
-        // In production, show generic error and log details
-        error_log("CRITICAL: Database unavailable. Check App Service settings.");
-        die('Service temporarily unavailable. Please try again later.');
-    }
+    error_log("Database connection error: " . $e->getMessage());
+    die('Database connection failed: ' . $e->getMessage());
 }
 ?>
