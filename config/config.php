@@ -29,6 +29,13 @@ define('DB_USER', $db_user ?: 'root');
 define('DB_PASS', $db_pass ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
+// For Azure MySQL, format username as user@server
+if ($isAzure && !str_contains(DB_USER, '@')) {
+    $azure_username = DB_USER . '@' . str_replace('.mysql.database.azure.com', '', DB_HOST);
+    define('DB_USER_AZURE', $azure_username);
+    error_log('Azure MySQL username formatted as: ' . $azure_username);
+}
+
 // Debug: Log configuration for Azure troubleshooting
 if ($isAzure) {
     error_log('✓ Using Azure configuration');
