@@ -54,9 +54,11 @@ $health = [
 
 // Test database connection
 try {
-    $dsn = "mysql:host={$db_host};dbname={$db_name};charset=utf8mb4";
+    $dsn = "mysql:host={$db_host};dbname={$db_name};charset=utf8mb4;ssl_mode=REQUIRED";
     $pdo = new PDO($dsn, $db_user, $db_pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::MYSQL_ATTR_SSL_CA => true,
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
     ]);
     $health['database']['connection'] = 'connected';
     
