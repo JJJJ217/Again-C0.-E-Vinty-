@@ -255,7 +255,7 @@ $page_title = "Login - Again&Co";
                     <h4>Demo Accounts</h4>
                     <p><small>For testing purposes, you can use these accounts:</small></p>
                     <ul style="font-size: 0.875rem;">
-                        <li><strong>Admin:</strong> admin@mail.com / Admin123</li>
+                        <li><strong>Admin:</strong> admin@mail.com / password</li>
                         <li><strong>Staff:</strong> Create a staff account via registration</li>
                         <li><strong>Customer:</strong> Create a customer account via registration</li>
                     </ul>

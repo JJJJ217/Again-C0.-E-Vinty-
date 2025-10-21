@@ -4,13 +4,15 @@
  * Handles user authentication and session security
  */
 
-// Configure session to use a local directory with proper permissions
-$session_dir = __DIR__ . '/../logs';
+// Configure session storage path
+// On Azure App Service (Linux), using /tmp for sessions avoids UID ownership issues
+$default_session_dir = sys_get_temp_dir() . '/sessions';
+$session_dir = $default_session_dir;
 if (!is_dir($session_dir)) {
     @mkdir($session_dir, 0777, true);
 }
 
-// Set session save path to logs directory (under /home/site/wwwroot/logs on Azure)
+// Set session save path (e.g., /tmp/sessions)
 ini_set('session.save_path', $session_dir);
 
 // Harden cookie and session settings BEFORE session_start
