@@ -143,6 +143,23 @@ function loginUser($user_data) {
     
     // Regenerate session ID for security
     session_regenerate_id(true);
+
+    // Explicitly set the session cookie to ensure header is sent
+    $is_https = (
+        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+    );
+    setcookie(
+        session_name(),
+        session_id(),
+        [
+            'expires' => time() + (int)(defined('SESSION_LIFETIME') ? SESSION_LIFETIME : 3600),
+            'path' => '/',
+            'secure' => $is_https,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]
+    );
     
     // Update last login time in database
     try {
