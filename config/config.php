@@ -41,11 +41,24 @@ foreach (array_merge($_SERVER ?? [], $_ENV ?? []) as $key => $value) {
 }
 
 // DATABASE CONFIGURATION
-// Prefer explicit DB_* env vars. If missing and on Azure, fall back to MYSQLCONNSTR_* parsing.
-$db_host = getenv('DB_HOST') ?: ($isAzure ? ($azureConn['host'] ?: '') : '');
-$db_name = getenv('DB_NAME') ?: ($isAzure ? ($azureConn['db']   ?: '') : '');
-$db_user = getenv('DB_USER') ?: ($isAzure ? ($azureConn['user'] ?: '') : '');
-$db_pass = getenv('DB_PASS') ?: ($isAzure ? ($azureConn['pass'] ?: '') : '');
+// Prefer explicit DB_* env vars. If missing and on Azure, fall back to AZURE_MYSQL_* and then MYSQLCONNSTR_* parsing.
+$envAll = array_merge($_ENV ?? [], $_SERVER ?? []);
+
+$db_host = getenv('DB_HOST')
+    ?: ($envAll['AZURE_MYSQL_HOST'] ?? '')
+    ?: ($isAzure ? ($azureConn['host'] ?? '') : '');
+$db_name = getenv('DB_NAME')
+    ?: ($envAll['AZURE_MYSQL_DATABASE'] ?? '')
+    ?: ($isAzure ? ($azureConn['db'] ?? '') : '');
+$db_user = getenv('DB_USER')
+    ?: ($envAll['AZURE_MYSQL_USERNAME'] ?? '')
+    ?: ($isAzure ? ($azureConn['user'] ?? '') : '');
+$db_pass = getenv('DB_PASS')
+    ?: ($envAll['AZURE_MYSQL_PASSWORD'] ?? '')
+    ?: ($isAzure ? ($azureConn['pass'] ?? '') : '');
+$db_port = (int) (
+    getenv('DB_PORT') ?: ($envAll['AZURE_MYSQL_PORT'] ?? 0)
+);
 
 // Log what we're reading (safe)
 error_log('=== CONFIG DEBUG ===');
@@ -54,6 +67,7 @@ error_log('DB_HOST from env/connstr: ' . ($db_host !== '' ? $db_host : 'NOT SET'
 error_log('DB_NAME from env/connstr: ' . ($db_name !== '' ? $db_name : 'NOT SET'));
 error_log('DB_USER from env/connstr: ' . ($db_user !== '' ? $db_user : 'NOT SET'));
 error_log('DB_PASS from env/connstr: ' . ($db_pass !== '' ? '***' : 'NOT SET'));
+error_log('DB_PORT from env/connstr: ' . ($db_port ? $db_port : 'NOT SET'));
 
 // Fallback to sane defaults if env vars not set
 // Use 127.0.0.1 instead of 'localhost' to force TCP (avoid Unix socket issues like SQLSTATE[HY000] [2002])
@@ -62,6 +76,7 @@ define('DB_NAME', $db_name !== '' ? $db_name : 'evinty_ecommerce');
 define('DB_USER', $db_user !== '' ? $db_user : 'root');
 define('DB_PASS', $db_pass !== '' ? $db_pass : '');
 define('DB_CHARSET', 'utf8mb4');
+define('DB_PORT', $db_port ?: 3306);
 
 // For Azure MySQL, format username as user@server if needed
 if ($isAzure && !str_contains(DB_USER, '@') && str_contains(DB_HOST, 'mysql.database.azure.com')) {
