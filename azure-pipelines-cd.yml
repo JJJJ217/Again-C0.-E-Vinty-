@@ -390,7 +390,10 @@ stages:
   dependsOn: 
     - Deploy_Development
     - Deploy_Production
-  condition: or(succeeded('Deploy_Development'), succeeded('Deploy_Production'))
+  condition: or(
+    eq(dependencies.Deploy_Development.result, 'Succeeded'),
+    eq(dependencies.Deploy_Production.result, 'Succeeded')
+  )
   jobs:
   - job: SmokeTest
     displayName: 'Run Post-Deployment Smoke Tests'
