@@ -7,15 +7,43 @@
 // Configure session to use a local directory with proper permissions
 $session_dir = __DIR__ . '/../logs';
 if (!is_dir($session_dir)) {
-    mkdir($session_dir, 0777, true);
+    @mkdir($session_dir, 0777, true);
 }
 
-// Set session save path to logs directory
+// Set session save path to logs directory (under /home/site/wwwroot/logs on Azure)
 ini_set('session.save_path', $session_dir);
+
+// Harden cookie and session settings BEFORE session_start
+ini_set('session.use_strict_mode', '1');
+ini_set('session.cookie_httponly', '1');
+// Lax works well for normal POST flows; avoid None unless you also set Secure
+ini_set('session.cookie_samesite', 'Lax');
+
+// Detect HTTPS behind proxies (Azure App Service)
+$is_https = (
+    (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+);
+if ($is_https) {
+    ini_set('session.cookie_secure', '1');
+}
+
+// Apply cookie params (avoid setting domain to prevent mismatch)
+session_set_cookie_params([
+    'lifetime' => defined('SESSION_LIFETIME') ? SESSION_LIFETIME : 3600,
+    'path' => '/',
+    'secure' => $is_https,
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
 
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    // Lightweight debug to confirm session start and path
+    if (function_exists('error_log')) {
+        error_log('Session started; id=' . session_id() . '; path=' . ini_get('session.save_path'));
+    }
 }
 
 /**
