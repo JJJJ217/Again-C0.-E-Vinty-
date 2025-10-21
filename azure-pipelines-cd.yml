@@ -5,8 +5,6 @@
 trigger:
   branches:
     include:
-      - dev
-      - prod
       - main
 
 pr:
@@ -15,6 +13,15 @@ pr:
       - dev
       - prod
       - main
+
+parameters:
+  - name: deployTo
+    displayName: 'Target environment when running manually (from main)'
+    type: string
+    default: 'dev'
+    values:
+      - dev
+      - prod
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -258,7 +265,10 @@ stages:
     succeeded(),
     or(
       eq(variables['Build.SourceBranch'], 'refs/heads/dev'),
-      eq(variables['Build.SourceBranch'], 'refs/heads/main')
+      and(
+        eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+        eq('${{ parameters.deployTo }}', 'dev')
+      )
     )
   )
   jobs:
@@ -310,7 +320,7 @@ stages:
               echo "==================================="
               echo "🌐 Environment: DEVELOPMENT"
               echo "🔗 URL: https://$(webAppNameDev).azurewebsites.net"
-              echo "🔀 Branch: dev"
+              echo "🔀 Branch: $(Build.SourceBranchName)"
               echo "📝 Commit: $(Build.SourceVersion)"
               echo "👤 Author: $(Build.RequestedFor)"
               echo "⏰ Time: $(Build.BuildNumber)"
@@ -324,7 +334,16 @@ stages:
 - stage: Deploy_Production
   displayName: '🎯 Deploy to Production (CD)'
   dependsOn: Test
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/prod'))
+  condition: and(
+    succeeded(),
+    or(
+      eq(variables['Build.SourceBranch'], 'refs/heads/prod'),
+      and(
+        eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+        eq('${{ parameters.deployTo }}', 'prod')
+      )
+    )
+  )
   jobs:
   - deployment: DeployProd
     displayName: 'Deploy to Production Environment'
@@ -374,7 +393,7 @@ stages:
               echo "==================================="
               echo "🎯 Environment: PRODUCTION"
               echo "🌐 URL: https://$(webAppNameProd).azurewebsites.net"
-              echo "🔀 Branch: prod"
+              echo "🔀 Branch: $(Build.SourceBranchName)"
               echo "📝 Commit: $(Build.SourceVersion)"
               echo "👤 Author: $(Build.RequestedFor)"
               echo "⏰ Time: $(Build.BuildNumber)"
