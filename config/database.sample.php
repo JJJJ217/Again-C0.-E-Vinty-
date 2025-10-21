@@ -27,16 +27,18 @@ class Database {
     public function connect() {
         if ($this->pdo === null) {
             try {
-                // For Azure MySQL, we need to use username@servername format
-                $username = $this->username;
-                if (str_contains($this->host, 'mysql.database.azure.com') && !str_contains($username, '@')) {
-                    $servername = explode('.', $this->host)[0]; // Extract server name
-                    $username = $username . '@' . $servername;
+                // Prefer plain username first (Azure MySQL Flexible), then optionally retry with @server
+                $baseUser = $this->username;
+                $serverName = null;
+                if (str_contains($this->host, 'mysql.database.azure.com')) {
+                    $serverName = explode('.', $this->host)[0]; // Extract server name
                 }
+                $altUser = $serverName ? ($baseUser . '@' . $serverName) : null;
+                $username = $baseUser;
                 
                 error_log("Attempting database connection to: " . $this->host);
                 error_log("Database: " . $this->dbname);
-                error_log("Username format: " . $username);
+                error_log("Username (initial): " . $username);
                 
                 $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset={$this->charset}";
                 
@@ -48,7 +50,20 @@ class Database {
                     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
                 ];
                 
-                $this->pdo = new PDO($dsn, $username, $this->password, $options);
+                try {
+                    // First attempt with plain username
+                    $this->pdo = new PDO($dsn, $username, $this->password, $options);
+                } catch (PDOException $e1) {
+                    $msg = $e1->getMessage();
+                    $code = (string)$e1->getCode();
+                    if ($altUser && ($code === '1045' || stripos($msg, 'Access denied') !== false) && strpos($username, '@') === false) {
+                        error_log("⚠️ Access denied for '{$username}'. Retrying with Single Server username '{$altUser}'...");
+                        $this->pdo = new PDO($dsn, $altUser, $this->password, $options);
+                        $username = $altUser;
+                    } else {
+                        throw $e1;
+                    }
+                }
                 
                 error_log("✓ Database connection successful!");
                 
