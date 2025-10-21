@@ -89,14 +89,15 @@ function formatDate($date, $format = 'Y-m-d H:i:s') {
 function redirectWithMessage($url, $message, $type = 'info') {
     $_SESSION['flash_message'] = $message;
     $_SESSION['flash_type'] = $type;
-    // Use relative redirects when URL is same-host to avoid proxy scheme issues
-    if (str_starts_with($url, SITE_URL)) {
-        $relative = substr($url, strlen(SITE_URL));
-        $relative = $relative ?: '/';
-        header('Location: ' . $relative);
-    } else {
-        header('Location: ' . $url);
+    // Normalize to absolute https URL on this site to avoid proxy rewriting
+    $dest = $url;
+    if (str_starts_with($url, '/')) {
+        $dest = SITE_URL . $url;
+    } elseif (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+        // Treat as relative path
+        $dest = SITE_URL . '/' . ltrim($url, '/');
     }
+    header('Location: ' . $dest);
     exit();
 }
 

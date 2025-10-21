@@ -92,6 +92,10 @@ $host = $forwardedHost ?: $hostHeader;
 
 // On Azure, force https scheme for public URLs
 $protocol = ($is_https_proto || $isAzure) ? 'https' : 'http';
+// Normalize server var to help downstream libs
+if ($protocol === 'https' && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on')) {
+    $_SERVER['HTTPS'] = 'on';
+}
 
 // Optional: forwarded port handling (rarely needed on Azure)
 $forwardedPort = $_SERVER['HTTP_X_FORWARDED_PORT'] ?? null;
