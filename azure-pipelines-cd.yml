@@ -5,6 +5,8 @@
 trigger:
   branches:
     include:
+      - dev
+      - prod
       - main
 
 pr:
@@ -13,15 +15,6 @@ pr:
       - dev
       - prod
       - main
-
-parameters:
-  - name: deployTo
-    displayName: 'Target environment when running manually (from main)'
-    type: string
-    default: 'dev'
-    values:
-      - dev
-      - prod
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -35,15 +28,6 @@ variables:
   webAppNameDev: 'Again-CoE-Vinty'
   webAppNameProd: 'Again-CoE-Vinty'
   appType: 'webAppLinux'  # Linux-based App Service with PHP and nginx
-  # Resource groups (set these to match your subscription)
-  resourceGroupDev: 'Again-CoE-Vinty_group'
-  resourceGroupProd: 'Again-CoE-Vinty_group'
-  # App settings (set these as pipeline variables; mark dbPass as secret in Azure DevOps)
-  dbHost: 'again-co.mysql.database.azure.com'
-  dbUser: 'Jiaming'
-  dbName: 'evinty_ecommerce'
-  # dbPass should be provided securely via pipeline variable/secret
-  dbPass: ''
 
 stages:
 # =============================================================================
@@ -95,23 +79,11 @@ stages:
         cleanTargetFolder: true
 
     - script: |
-        echo "Setting up configuration files safely..."
-        CFG_DIR="$(Build.ArtifactStagingDirectory)/app/config"
-        # Only create from samples if the real files are missing in the package
-        if [ ! -f "$CFG_DIR/config.php" ] && [ -f "$CFG_DIR/config.sample.php" ]; then
-          cp "$CFG_DIR/config.sample.php" "$CFG_DIR/config.php"
-          echo "Created config.php from sample"
-        else
-          echo "Keeping existing config.php"
-        fi
-        if [ ! -f "$CFG_DIR/database.php" ] && [ -f "$CFG_DIR/database.sample.php" ]; then
-          cp "$CFG_DIR/database.sample.php" "$CFG_DIR/database.php"
-          echo "Created database.php from sample"
-        else
-          echo "Keeping existing database.php"
-        fi
-        echo "✓ Configuration files check completed"
-      displayName: 'Setup Configuration Files (idempotent)'
+        echo "Setting up configuration files from samples..."
+        cp $(Build.ArtifactStagingDirectory)/app/config/config.sample.php $(Build.ArtifactStagingDirectory)/app/config/config.php
+        cp $(Build.ArtifactStagingDirectory)/app/config/database.sample.php $(Build.ArtifactStagingDirectory)/app/config/database.php
+        echo "✓ Configuration files created from samples"
+      displayName: 'Setup Configuration Files'
 
     - task: ArchiveFiles@2
       displayName: 'Create Deployment Package'
@@ -259,18 +231,9 @@ stages:
 # STAGE 3: DEPLOY TO DEVELOPMENT (DEV BRANCH)
 # =============================================================================
 - stage: Deploy_Development
-  displayName: '🚀 Deploy to Development (dev or main)'
+  displayName: '🚀 Deploy to Development (Dev)'
   dependsOn: Test
-  condition: and(
-    succeeded(),
-    or(
-      eq(variables['Build.SourceBranch'], 'refs/heads/dev'),
-      and(
-        eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-        eq('${{ parameters.deployTo }}', 'dev')
-      )
-    )
-  )
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
   jobs:
   - deployment: DeployDev
     displayName: 'Deploy to Development Environment'
@@ -304,13 +267,13 @@ stages:
               inlineScript: |
                 echo "Setting environment variables for database connection..."
                 az webapp config appsettings set \
-                  --resource-group $(resourceGroupDev) \
+                  --resource-group Again-CoE-Vinty-rg \
                   --name $(webAppNameDev) \
                   --settings \
-                    DB_HOST="$(dbHost)" \
-                    DB_USER="$(dbUser)" \
-                    DB_PASS="$(dbPass)" \
-                    DB_NAME="$(dbName)" \
+                    DB_HOST="again-co.mysql.database.azure.com" \
+                    DB_USER="Jiaming" \
+                    DB_PASS="Jiaming217" \
+                    DB_NAME="evinty_ecommerce" \
                     WEBSITES_ENABLE_APP_SERVICE_STORAGE=true
                 echo "✓ Development app settings configured"
 
@@ -320,7 +283,7 @@ stages:
               echo "==================================="
               echo "🌐 Environment: DEVELOPMENT"
               echo "🔗 URL: https://$(webAppNameDev).azurewebsites.net"
-              echo "🔀 Branch: $(Build.SourceBranchName)"
+              echo "🔀 Branch: dev"
               echo "📝 Commit: $(Build.SourceVersion)"
               echo "👤 Author: $(Build.RequestedFor)"
               echo "⏰ Time: $(Build.BuildNumber)"
@@ -334,16 +297,7 @@ stages:
 - stage: Deploy_Production
   displayName: '🎯 Deploy to Production (CD)'
   dependsOn: Test
-  condition: and(
-    succeeded(),
-    or(
-      eq(variables['Build.SourceBranch'], 'refs/heads/prod'),
-      and(
-        eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-        eq('${{ parameters.deployTo }}', 'prod')
-      )
-    )
-  )
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/prod'))
   jobs:
   - deployment: DeployProd
     displayName: 'Deploy to Production Environment'
@@ -377,13 +331,13 @@ stages:
               inlineScript: |
                 echo "Setting environment variables for database connection..."
                 az webapp config appsettings set \
-                  --resource-group $(resourceGroupProd) \
+                  --resource-group Again-CoE-Vinty-rg \
                   --name $(webAppNameProd) \
                   --settings \
-                    DB_HOST="$(dbHost)" \
-                    DB_USER="$(dbUser)" \
-                    DB_PASS="$(dbPass)" \
-                    DB_NAME="$(dbName)" \
+                    DB_HOST="again-co.mysql.database.azure.com" \
+                    DB_USER="Jiaming" \
+                    DB_PASS="Jiaming217" \
+                    DB_NAME="evinty_ecommerce" \
                     WEBSITES_ENABLE_APP_SERVICE_STORAGE=true
                 echo "✓ Production app settings configured"
 
@@ -393,7 +347,7 @@ stages:
               echo "==================================="
               echo "🎯 Environment: PRODUCTION"
               echo "🌐 URL: https://$(webAppNameProd).azurewebsites.net"
-              echo "🔀 Branch: $(Build.SourceBranchName)"
+              echo "🔀 Branch: prod"
               echo "📝 Commit: $(Build.SourceVersion)"
               echo "👤 Author: $(Build.RequestedFor)"
               echo "⏰ Time: $(Build.BuildNumber)"
@@ -409,10 +363,7 @@ stages:
   dependsOn: 
     - Deploy_Development
     - Deploy_Production
-  condition: or(
-    eq(dependencies.Deploy_Development.result, 'Succeeded'),
-    eq(dependencies.Deploy_Production.result, 'Succeeded')
-  )
+  condition: or(succeeded('Deploy_Development'), succeeded('Deploy_Production'))
   jobs:
   - job: SmokeTest
     displayName: 'Run Post-Deployment Smoke Tests'
