@@ -89,6 +89,10 @@ function formatDate($date, $format = 'Y-m-d H:i:s') {
 function redirectWithMessage($url, $message, $type = 'info') {
     $_SESSION['flash_message'] = $message;
     $_SESSION['flash_type'] = $type;
+    // Ensure session is written before redirecting
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
     // Normalize to absolute https URL on this site to avoid proxy rewriting
     $dest = $url;
     if (str_starts_with($url, '/')) {

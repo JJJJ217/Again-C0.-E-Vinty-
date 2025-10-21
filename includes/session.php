@@ -172,10 +172,7 @@ function loginUser($user_data) {
         // Log error but don't break login process
         error_log("Failed to update last login: " . $e->getMessage());
     }
-    // Ensure session data is written before any redirect
-    if (session_status() === PHP_SESSION_ACTIVE) {
-        session_write_close();
-    }
+    
 }
 
 /**
