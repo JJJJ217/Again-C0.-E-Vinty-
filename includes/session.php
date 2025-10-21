@@ -93,7 +93,7 @@ function requireLogin() {
         $has_cookie = isset($_COOKIE[session_name()]);
         $proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https' : 'http');
         error_log('requireLogin(): not logged in; sid=' . session_id() . '; has_cookie=' . ($has_cookie ? 'yes' : 'no') . '; host=' . ($_SERVER['HTTP_HOST'] ?? '') . '; proto=' . $proto);
-        header('Location: ' . SITE_URL . '/pages/authentication/login.php');
+        header('Location: /pages/authentication/login.php');
         exit();
     }
 }
@@ -171,6 +171,10 @@ function loginUser($user_data) {
     } catch (Exception $e) {
         // Log error but don't break login process
         error_log("Failed to update last login: " . $e->getMessage());
+    }
+    // Ensure session data is written before any redirect
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
     }
 }
 
