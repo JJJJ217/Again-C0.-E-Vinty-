@@ -78,9 +78,29 @@ if ($isAzure) {
 }
 
 // SITE CONFIGURATION
-$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+// Detect HTTPS correctly behind proxies (Azure adds X-Forwarded-Proto)
+$xfp = isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ? strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) : null;
+$is_https_proto = (
+    (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+    ($xfp === 'https')
+);
+
+// Prefer forwarded host if present (when behind a proxy)
+$forwardedHost = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? null;
+$hostHeader = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$host = $forwardedHost ?: $hostHeader;
+
+// On Azure, force https scheme for public URLs
+$protocol = ($is_https_proto || $isAzure) ? 'https' : 'http';
+
+// Optional: forwarded port handling (rarely needed on Azure)
+$forwardedPort = $_SERVER['HTTP_X_FORWARDED_PORT'] ?? null;
+if ($forwardedPort && !str_contains($host, ':') && !in_array((int)$forwardedPort, [80, 443], true)) {
+    $host .= ':' . $forwardedPort;
+}
+
 define('SITE_URL', $protocol . '://' . $host);
+error_log('SITE_URL computed as: ' . SITE_URL);
 define('SITE_NAME', 'Again&Co');
 define('SITE_EMAIL', getenv('SITE_EMAIL') ?: 'admin@evinty.com');
 

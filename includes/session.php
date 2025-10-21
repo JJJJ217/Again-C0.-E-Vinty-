@@ -87,7 +87,11 @@ function hasRole($required_roles) {
  */
 function requireLogin() {
     if (!isLoggedIn()) {
-    header('Location: ' . SITE_URL . '/pages/authentication/login.php');
+        // Debug minimal info to diagnose redirect loops without exposing secrets
+        $has_cookie = isset($_COOKIE[session_name()]);
+        $proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https' : 'http');
+        error_log('requireLogin(): not logged in; sid=' . session_id() . '; has_cookie=' . ($has_cookie ? 'yes' : 'no') . '; host=' . ($_SERVER['HTTP_HOST'] ?? '') . '; proto=' . $proto);
+        header('Location: ' . SITE_URL . '/pages/authentication/login.php');
         exit();
     }
 }
@@ -149,6 +153,33 @@ function loginUser($user_data) {
         // Log error but don't break login process
         error_log("Failed to update last login: " . $e->getMessage());
     }
+}
+
+/**
+ * Extend session cookie lifetime (e.g., for "Remember me")
+ */
+function extendSessionCookie($lifetimeSeconds) {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        return;
+    }
+    $params = session_get_cookie_params();
+    // Detect HTTPS behind proxy
+    $is_https = (
+        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+    );
+    setcookie(
+        session_name(),
+        session_id(),
+        [
+            'expires' => time() + (int)$lifetimeSeconds,
+            'path' => $params['path'] ?: '/',
+            'secure' => $is_https,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]
+    );
+    error_log('Session cookie extended by ' . (int)$lifetimeSeconds . ' seconds');
 }
 
 /**
