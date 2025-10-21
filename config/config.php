@@ -5,32 +5,66 @@
  */
 
 // ENVIRONMENT DETECTION
-$isAzure = str_contains($_SERVER['HTTP_HOST'] ?? '', 'azurewebsites.net');
+$isAzure = (
+    (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'azurewebsites.net')) ||
+    getenv('WEBSITE_SITE_NAME') !== false // Reliable signal on Azure App Service
+);
+
+// Helper: parse Azure "Connection strings" env vars if present (MYSQLCONNSTR_*)
+$azureConn = [
+    'host' => null,
+    'db'   => null,
+    'user' => null,
+    'pass' => null,
+];
+
+foreach (array_merge($_SERVER ?? [], $_ENV ?? []) as $key => $value) {
+    if (strpos($key, 'MYSQLCONNSTR_') === 0 && is_string($value)) {
+        // Example: "Database=mydb;Data Source=servername.mysql.database.azure.com;User Id=user@servername;Password=secret"
+        $parts = array_filter(array_map('trim', explode(';', $value)));
+        $kv = [];
+        foreach ($parts as $p) {
+            $eqPos = strpos($p, '=');
+            if ($eqPos !== false) {
+                $k = trim(substr($p, 0, $eqPos));
+                $v = trim(substr($p, $eqPos + 1));
+                $kv[$k] = $v;
+            }
+        }
+        $azureConn['host'] = $kv['Data Source'] ?? $azureConn['host'];
+        $azureConn['db']   = $kv['Database'] ?? $azureConn['db'];
+        $azureConn['user'] = $kv['User Id'] ?? $azureConn['user'];
+        $azureConn['pass'] = $kv['Password'] ?? $azureConn['pass'];
+        // Use the first MYSQLCONNSTR_* we find
+        break;
+    }
+}
 
 // DATABASE CONFIGURATION
-// Uses environment variables on Azure, defaults to localhost for dev
-$db_host = getenv('DB_HOST');
-$db_name = getenv('DB_NAME');
-$db_user = getenv('DB_USER');
-$db_pass = getenv('DB_PASS');
+// Prefer explicit DB_* env vars. If missing and on Azure, fall back to MYSQLCONNSTR_* parsing.
+$db_host = getenv('DB_HOST') ?: ($isAzure ? ($azureConn['host'] ?: '') : '');
+$db_name = getenv('DB_NAME') ?: ($isAzure ? ($azureConn['db']   ?: '') : '');
+$db_user = getenv('DB_USER') ?: ($isAzure ? ($azureConn['user'] ?: '') : '');
+$db_pass = getenv('DB_PASS') ?: ($isAzure ? ($azureConn['pass'] ?: '') : '');
 
-// Log what we're reading
+// Log what we're reading (safe)
 error_log('=== CONFIG DEBUG ===');
 error_log('Is Azure: ' . ($isAzure ? 'YES' : 'NO'));
-error_log('DB_HOST from env: ' . ($db_host !== false ? $db_host : 'NOT SET'));
-error_log('DB_NAME from env: ' . ($db_name !== false ? $db_name : 'NOT SET'));
-error_log('DB_USER from env: ' . ($db_user !== false ? $db_user : 'NOT SET'));
-error_log('DB_PASS from env: ' . ($db_pass !== false ? '***' : 'NOT SET'));
+error_log('DB_HOST from env/connstr: ' . ($db_host !== '' ? $db_host : 'NOT SET'));
+error_log('DB_NAME from env/connstr: ' . ($db_name !== '' ? $db_name : 'NOT SET'));
+error_log('DB_USER from env/connstr: ' . ($db_user !== '' ? $db_user : 'NOT SET'));
+error_log('DB_PASS from env/connstr: ' . ($db_pass !== '' ? '***' : 'NOT SET'));
 
-// Fallback to defaults if env vars not set
-define('DB_HOST', $db_host ?: 'localhost');
-define('DB_NAME', $db_name ?: 'evinty_ecommerce');
-define('DB_USER', $db_user ?: 'root');
-define('DB_PASS', $db_pass ?: '');
+// Fallback to sane defaults if env vars not set
+// Use 127.0.0.1 instead of 'localhost' to force TCP (avoid Unix socket issues like SQLSTATE[HY000] [2002])
+define('DB_HOST', $db_host !== '' ? $db_host : '127.0.0.1');
+define('DB_NAME', $db_name !== '' ? $db_name : 'evinty_ecommerce');
+define('DB_USER', $db_user !== '' ? $db_user : 'root');
+define('DB_PASS', $db_pass !== '' ? $db_pass : '');
 define('DB_CHARSET', 'utf8mb4');
 
-// For Azure MySQL, format username as user@server
-if ($isAzure && !str_contains(DB_USER, '@')) {
+// For Azure MySQL, format username as user@server if needed
+if ($isAzure && !str_contains(DB_USER, '@') && str_contains(DB_HOST, 'mysql.database.azure.com')) {
     $azure_username = DB_USER . '@' . str_replace('.mysql.database.azure.com', '', DB_HOST);
     define('DB_USER_AZURE', $azure_username);
     error_log('Azure MySQL username formatted as: ' . $azure_username);
