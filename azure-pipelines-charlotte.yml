@@ -1,5 +1,5 @@
 trigger:
-- main
+- Charlotte-feature
 
 # Manual trigger for Charlotte's specific test units
 pr: none

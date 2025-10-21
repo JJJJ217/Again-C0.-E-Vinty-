@@ -1,5 +1,5 @@
 trigger:
-- main
+- Thea-features
 
 # Manual trigger for Thea's specific test units
 pr: none

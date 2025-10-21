@@ -1,5 +1,5 @@
 trigger:
-- main
+- Baljinnyam-features
 
 # Manual trigger for Baljinnyam's specific test units
 pr: none
