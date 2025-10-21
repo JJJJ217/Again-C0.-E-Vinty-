@@ -14,12 +14,34 @@ $isAzure = (
 // Uses environment variables on Azure, defaults to localhost for dev
 $env = array_merge($_ENV ?? [], $_SERVER ?? []);
 
-// Prefer DB_*; then AZURE_MYSQL_*; allow both DBNAME and DATABASE
-$db_host = getenv('DB_HOST') ?: ($env['AZURE_MYSQL_HOST'] ?? '');
-$db_name = getenv('DB_NAME') ?: ($env['AZURE_MYSQL_DBNAME'] ?? ($env['AZURE_MYSQL_DATABASE'] ?? ''));
-$db_user = getenv('DB_USER') ?: ($env['AZURE_MYSQL_USERNAME'] ?? '');
-$db_pass = getenv('DB_PASS') ?: ($env['AZURE_MYSQL_PASSWORD'] ?? '');
-$db_port = (int) (getenv('DB_PORT') ?: ($env['AZURE_MYSQL_PORT'] ?? 0));
+// Parse Azure Connection String if present (MYSQLCONNSTR_*)
+$azureConn = ['host' => null, 'db' => null, 'user' => null, 'pass' => null];
+foreach (array_merge($_SERVER ?? [], $_ENV ?? []) as $key => $value) {
+    if (strpos($key, 'MYSQLCONNSTR_') === 0 && is_string($value)) {
+        $parts = array_filter(array_map('trim', explode(';', $value)));
+        $kv = [];
+        foreach ($parts as $p) {
+            $eqPos = strpos($p, '=');
+            if ($eqPos !== false) {
+                $k = trim(substr($p, 0, $eqPos));
+                $v = trim(substr($p, $eqPos + 1));
+                $kv[$k] = $v;
+            }
+        }
+        $azureConn['host'] = $kv['Data Source'] ?? null;
+        $azureConn['db']   = $kv['Database'] ?? null;
+        $azureConn['user'] = $kv['User Id'] ?? null;
+        $azureConn['pass'] = $kv['Password'] ?? null;
+        break;
+    }
+}
+
+// Prefer DB_*; then AZURE_MYSQL_*; then MYSQLCONNSTR_* fallback
+$db_host = getenv('DB_HOST') ?: (getenv('AZURE_MYSQL_HOST') ?: ($azureConn['host'] ?? ''));
+$db_name = getenv('DB_NAME') ?: (getenv('AZURE_MYSQL_DBNAME') ?: (getenv('AZURE_MYSQL_DATABASE') ?: ($azureConn['db'] ?? '')));
+$db_user = getenv('DB_USER') ?: (getenv('AZURE_MYSQL_USERNAME') ?: ($azureConn['user'] ?? ''));
+$db_pass = getenv('DB_PASS') ?: (getenv('AZURE_MYSQL_PASSWORD') ?: ($azureConn['pass'] ?? ''));
+$db_port = (int) (getenv('DB_PORT') ?: (getenv('AZURE_MYSQL_PORT') ?: 0));
 
 // Log what we're reading
 error_log('=== CONFIG DEBUG ===');
@@ -40,8 +62,8 @@ define('DB_CHARSET', 'utf8mb4');
 define('DB_PORT', $db_port ?: 3306);
 
 // For Azure Single Server, username is user@server; for Flexible Server it's just user.
-// If AZURE_MYSQL_USERNAME was provided, assume Flexible Server and DO NOT append.
-if ($isAzure && !str_contains(DB_USER, '@') && empty($env['AZURE_MYSQL_USERNAME'])) {
+// If AZURE_MYSQL_USERNAME was provided (common on Flexible Server), DO NOT append.
+if ($isAzure && !str_contains(DB_USER, '@') && getenv('AZURE_MYSQL_USERNAME') === false) {
     $azure_username = DB_USER . '@' . str_replace('.mysql.database.azure.com', '', DB_HOST);
     define('DB_USER_AZURE', $azure_username);
     error_log('Azure MySQL username formatted as: ' . $azure_username);
