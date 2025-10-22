@@ -213,26 +213,6 @@ $page_title = "Register - Again&Co";
                         <?php endif; ?>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="role" class="form-label">Account Type *</label>
-                        <select id="role" 
-                                name="role" 
-                                class="form-control <?= isset($errors['role']) ? 'error' : '' ?>"
-                                required>
-                            <option value="customer" <?= ($form_data['role'] ?? 'customer') === 'customer' ? 'selected' : '' ?>>
-                                Customer - Shop for vintage items
-                            </option>
-                            <option value="staff" <?= ($form_data['role'] ?? '') === 'staff' ? 'selected' : '' ?>>
-                                Staff - Manage inventory and orders
-                            </option>
-                            <option value="admin" <?= ($form_data['role'] ?? '') === 'admin' ? 'selected' : '' ?>>
-                                Administrator - Full system access
-                            </option>
-                        </select>
-                        <?php if (isset($errors['role'])): ?>
-                            <div class="error-message"><?= htmlspecialchars($errors['role']) ?></div>
-                        <?php endif; ?>
-                    </div>
                     
                     <!-- Password Section -->
                     <h3 class="mb-3 mt-4">Password</h3>

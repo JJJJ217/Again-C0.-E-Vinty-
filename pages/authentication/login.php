@@ -249,17 +249,6 @@ $page_title = "Login - Again&Co";
                         <a href="registeration.php" class="btn btn-secondary">Create Account</a>
                     </div>
                 </form>
-                
-                <!-- Demo Accounts Info -->
-                <div class="demo-accounts mt-4" style="background-color: #f8f9fa; padding: 1rem; border-radius: 5px;">
-                    <h4>Demo Accounts</h4>
-                    <p><small>For testing purposes, you can use these accounts:</small></p>
-                    <ul style="font-size: 0.875rem;">
-                        <li><strong>Admin:</strong> admin@mail.com / password</li>
-                        <li><strong>Staff:</strong> Create a staff account via registration</li>
-                        <li><strong>Customer:</strong> Create a customer account via registration</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </main>
