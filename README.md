@@ -19,17 +19,6 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Local Development**: XAMPP (Apache + MySQL)
 - **Cloud Deployment**: Microsoft Azure (App Service, MySQL Database)
 
-## 👥 Team & Feature Assignments
-- **Registration & Login**: Jiaming Huang
-- **Profile management**: Charlotte Pham
-- **Manipulate users**: Jiaming Huang
-- **Product filtering**: Thea Ngo
-- **Product search**: Thea Ngo
-- **Product catalogs**: Charlotte Pham
-- **Inventory control**: Baljinnyam Gansukh
-- **Order status**: Baljinnyam Gansukh
-- **Shipping & Payment**: Michael Sutjiato
-- **Shopping cart**: Michael Sutjiato
 
 ## 🗂️ Project Structure
 
@@ -106,11 +95,11 @@ Again-C0.-E-Vinty-/
    - Open browser and navigate to: `http://localhost/Again-C0.-E-Vinty-`
 
 7. **PHP Development Server (Alternative access to the web)**:
-   - Navigate to project directory: `cd /path/to/Again-C0.-E-Vinty-`
+   - Open VScode terminal (or relevant integrated terminal)
    - Start server: `php -S localhost:8000`
    - Access website: `http://localhost:8000`
-   - Stop server: `Ctrl + C`
    - if database connection failed: check the port is on `3306`
+   - Stop server: `Ctrl + C`
 
 ## 🧪 Testing
 
