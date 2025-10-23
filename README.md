@@ -17,6 +17,7 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Backend**: PHP 8.0+
 - **Database**: MySQL 8.0+
 - **Local Development**: XAMPP (Apache + MySQL)
+- **Cloud Deployment**: Microsoft Azure (App Service, MySQL Database)
 
 ## 👥 Team & Feature Assignments
 - **Registration & Login**: Jiaming Huang
@@ -30,72 +31,52 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
 - **Shipping & Payment**: Michael Sutjiato
 - **Shopping cart**: Michael Sutjiato
 
-### 🔧 Core System Features
-- **Responsive Design**: Mobile-first responsive layout
-- **Role-Based Access Control**: Different interfaces for different user types
-- **Security**: Password hashing, input sanitization, SQL injection prevention
-- **Session Management**: Secure session handling with timeout
-- **Error Handling**: Comprehensive error handling and logging
-- **Form Validation**: Client and server-side validation
 ## 🗂️ Project Structure
 
 ```
-├── assets/
-│   ├── css/
-│   │   └── style.css          # Main stylesheet
-│   ├── js/
-│   │   └── main.js            # Client-side JavaScript
-│   └── images/                # Image assets
-├── config/
-│   ├── config.php             # Application configuration
-│   └── database.php           # Database connection class
-├── database/
-│   └── schema.sql             # Database schema and sample data
-├── includes/
-│   ├── functions.php          # Utility functions
-│   ├── header.php             # Site header template
-│   ├── footer.php             # Site footer template
-│   ├── init.php               # Application bootstrap
-│   └── session.php            # Session management
-├── pages/
-│   ├── auth/
-│   │   ├── login.php          # User login page
-│   │   ├── register.php       # User registration page
-│   │   ├── logout.php         # Logout handler
-│   │   ├── forgot-password.php # Password reset request
-│   │   └── reset-password.php  # Password reset completion
-│   ├── user/
-│   │   └── profile.php        # User profile management
-│   └── admin/                 # Admin panel (future implementation)
-└── index.php                  # Homepage
+Again-C0.-E-Vinty-/
+├── api/                       # API endpoints (cart, admin operations)
+├── assets/                    # Frontend assets
+│   ├── css/style.css         # Main stylesheet
+│   └── js/main.js            # Client-side JavaScript
+├── config/                    # Application configuration
+│   ├── config.php            # App settings & DB config
+│   └── database.php          # Database connection
+├── database/                  # Database
+│   └── schema.sql            # Schema & sample data
+├── includes/                  # Shared components
+│   ├── init.php              # Bootstrap
+│   ├── session.php           # Session management
+│   ├── functions.php         # Utility functions
+│   ├── header.php            # Header template
+│   └── footer.php            # Footer template
+├── pages/                     # Page routes
+│   ├── authentication/       # Login, register, password reset
+│   ├── products/             # Catalog, search, detail
+│   ├── user/                 # Profile, orders, cart
+│   ├── checkout/             # Checkout & payment
+│   ├── admin/                # Admin dashboard & management
+│   ├── about.php             # About page
+│   └── contact.php           # Contact page
+├── tests/                     # Unit & feature tests
+├── logs/                      # Application logs
+├── index.php                  # Entry point
+└── router.php                 # URL routing logic
 ```
 ## 👥 Team Members & Code Responsibilities
 
 ### Feature Ownership
-- **Registration & Login**: Jiaming Huang (`pages/authentication/`, session management)
-- **Profile Management**: Charlotte Pham (`pages/user/profile.php`, user data handling)
-- **User Management**: Jiaming Huang (`pages/admin/users/`, `api/admin.php`)
-- **Product Filtering & Search**: Thea Ngo (search functionality, filter components)
-- **Product Catalogs**: Charlotte Pham (product display, catalog management)
-- **Inventory Control**: Baljinnyam Gansukh (stock management, inventory tracking)
-- **Order Status**: Baljinnyam Gansukh (order tracking, status updates)
-- **Shipping & Payment**: Michael Sutjiato (payment processing, shipping logic)
-- **Shopping Cart**: Michael Sutjiato (`user/cart.php`, `api/cart.php`)
-
-### Directory Structure by Responsibility
-```
-├── pages/authentication/    # Jiaming Huang - User auth system
-├── pages/user/profile.php   # Charlotte Pham - Profile management  
-├── pages/admin/users/       # Jiaming Huang - User administration
-├── pages/admin/products/    # Charlotte Pham & Baljinnyam Gansukh
-├── user/cart.php           # Michael Sutjiato - Shopping cart
-├── api/cart.php            # Michael Sutjiato - Cart API
-├── api/admin.php           # Jiaming Huang - Admin API
-└── tests/                  # Individual member tests
-    ├── accountManagmentTest      # Jiaming Huang
-    ├── profileManagementTest     # Charlotte Pham  
-    └── userAuthTest             # Jiaming Huang
-```
+| Feature | Owner | Location |
+|---------|-------|----------|
+| Registration & Login | Jiaming Huang | `pages/authentication/` |
+| Profile Management | Charlotte Pham | `pages/user/` |
+| User Management | Jiaming Huang | `pages/admin/users/` |
+| Product Catalog | Charlotte Pham | `pages/products/` |
+| Search & Filtering | Thea Ngo | `pages/products/` |
+| Shopping Cart | Michael Sutjiato | `pages/checkout/` |
+| Checkout & Payment | Michael Sutjiato | `pages/checkout/` |
+| Inventory Control | Baljinnyam Gansukh | `pages/admin/products/` |
+| Order Management | Baljinnyam Gansukh | `pages/admin/orders/` |
 
 ## 🔧 Configuration and Installation Steps
 
@@ -111,39 +92,45 @@ A complete PHP/MySQL e-commerce platform for vintage and retro items, featuring 
    - Start MySQL
 
 4. **Configure Database Connection**:
-   - Add the config.php & database.php under config folder
-   - copy the config.sample.php into config.php
-   - 
+   - Copy `config.sample.php` → `config.php` in the `config/` folder
+   - Copy `database.sample.php` → `database.php` in the `config/` folder
+   - Default settings (for local development):
+     - Host: `127.0.0.1` | User: `root` | Password: `` (empty) | Database: `evinty_ecommerce` | Port: `3306`
 
 5. **Create Database**:
-   - Open phpMyAdmin (http://localhost/phpmyadmin)
-   - Create a new database named `evinty_ecommerce`
-   - Import the database schema from `database/schema.sql`
+   - Open phpMyAdmin: `http://localhost/phpmyadmin`
+   - Create database: `evinty_ecommerce`
+   - Import `database/schema.sql` to load tables and sample data
 
 6. **Access the Application**:
    - Open browser and navigate to: `http://localhost/Again-C0.-E-Vinty-`
 
+7. **PHP Development Server (Alternative access to the web)**:
+   - Navigate to project directory: `cd /path/to/Again-C0.-E-Vinty-`
+   - Start server: `php -S localhost:8000`
+   - Access website: `http://localhost:8000`
+   - Stop server: `Ctrl + C`
+   - if database connection failed: check the port is on `3306`
+
 ## 🧪 Testing
 
 ### Demo Accounts
-The system includes a default admin account:
-- **Email**: admin@evinty.com/admin@mail.com
-- **Password**: admin123/Admin123
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@evinty.com | admin123 |
+| Admin | admin@mail.com | Admin123 |
 
-### Test User Registration
-1. Navigate to the registration page
-2. Create accounts with different roles (Customer, Staff, Admin)
-3. Test login functionality
-4. Test password reset functionality
-
-### Feature Testing Checklist
-- [ ] User registration with all roles
-- [ ] User login and logout
+### Test Cases
+- [ ] User registration with different roles
+- [ ] Login & logout functionality
 - [ ] Profile management and editing
-- [ ] Password reset via email
-- [ ] Form validation (client and server-side)
-- [ ] Session management and timeout
-- [ ] Role-based access control
+- [ ] Password reset functionality
+- [ ] Form validation (client & server-side)
+- [ ] Product search & filtering
+- [ ] Shopping cart operations
+- [ ] Checkout & payment flow
+- [ ] Admin dashboard access & operations
+- [ ] Session management & timeout
 
 ## 🔐 Security Features
 
@@ -153,6 +140,12 @@ The system includes a default admin account:
 - **Input Validation**: Comprehensive sanitization and validation
 - **SQL Injection Prevention**: Prepared statements throughout
 
+### 🔧 Core System Features
+- **Role-Based Access Control**: Different interfaces for different user types
+- **Security**: Password hashing, input sanitization, SQL injection prevention
+- **Session Management**: Secure session handling with timeout
+- **Error Handling**: Comprehensive error handling and logging
+- **Form Validation**: Client and server-side validation
 
 ## 🤝 Contributing
 
@@ -164,13 +157,6 @@ The system includes a default admin account:
 ## 📜 License
 
 This project is developed for educational purposes as part of an e-commerce website assignment.
-
-**Team Members & Responsibilities:**
-- **Jiaming Huang**: Registration & Login, User Management
-- **Charlotte Pham**: Profile Management, Product Catalogs  
-- **Thea Ngo**: Product Filtering & Search
-- **Baljinnyam Gansukh**: Inventory Control, Order Status
-- **Michael Sutjiato**: Shopping Cart, Shipping & Payment
 
 ## 🆘 Support
 

@@ -82,9 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         // Handle "remember me" functionality
                         if ($form_data['remember_me']) {
-                            // Set longer session lifetime
-                            ini_set('session.gc_maxlifetime', 30 * 24 * 60 * 60); // 30 days
-                            session_set_cookie_params(30 * 24 * 60 * 60); // 30 days
+                            // Extend current session cookie to 30 days
+                            if (function_exists('extendSessionCookie')) {
+                                extendSessionCookie(30 * 24 * 60 * 60);
+                            }
                         }
                         
                         // Redirect based on user role
@@ -161,7 +162,7 @@ $page_title = "Login - Again&Co";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
     <?php include '../../includes/header.php'; ?>
@@ -245,20 +246,9 @@ $page_title = "Login - Again&Co";
                     
                     <div class="text-center">
                         <p>Don't have an account yet?</p>
-                        <a href="register.php" class="btn btn-secondary">Create Account</a>
+                        <a href="registeration.php" class="btn btn-secondary">Create Account</a>
                     </div>
                 </form>
-                
-                <!-- Demo Accounts Info -->
-                <div class="demo-accounts mt-4" style="background-color: #f8f9fa; padding: 1rem; border-radius: 5px;">
-                    <h4>Demo Accounts</h4>
-                    <p><small>For testing purposes, you can use these accounts:</small></p>
-                    <ul style="font-size: 0.875rem;">
-                        <li><strong>Admin:</strong> admin@evinty.com / admin123</li>
-                        <li><strong>Staff:</strong> Create a staff account via registration</li>
-                        <li><strong>Customer:</strong> Create a customer account via registration</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </main>

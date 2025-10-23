@@ -1,5 +1,5 @@
 trigger:
-- main
+- Jiaming/product
 
 # Manual trigger for Jiaming's specific test units
 pr: none

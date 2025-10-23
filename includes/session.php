@@ -4,18 +4,48 @@
  * Handles user authentication and session security
  */
 
-// Configure session to use a local directory with proper permissions
-$session_dir = __DIR__ . '/../logs';
+// Configure session storage path
+// On Azure App Service (Linux), using /tmp for sessions avoids UID ownership issues
+$default_session_dir = sys_get_temp_dir() . '/sessions';
+$session_dir = $default_session_dir;
 if (!is_dir($session_dir)) {
-    mkdir($session_dir, 0777, true);
+    @mkdir($session_dir, 0777, true);
 }
 
-// Set session save path to logs directory
+// Set session save path (e.g., /tmp/sessions)
 ini_set('session.save_path', $session_dir);
+
+// Harden cookie and session settings BEFORE session_start
+ini_set('session.use_strict_mode', '1');
+ini_set('session.cookie_httponly', '1');
+// Lax works well for normal POST flows; avoid None unless you also set Secure
+ini_set('session.cookie_samesite', 'Lax');
+
+// Detect HTTPS behind proxies (Azure App Service)
+$is_https = (
+    (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+);
+if ($is_https) {
+    ini_set('session.cookie_secure', '1');
+}
+
+// Apply cookie params (avoid setting domain to prevent mismatch)
+session_set_cookie_params([
+    'lifetime' => defined('SESSION_LIFETIME') ? SESSION_LIFETIME : 3600,
+    'path' => '/',
+    'secure' => $is_https,
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
 
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    // Lightweight debug to confirm session start and path
+    if (function_exists('error_log')) {
+        error_log('Session started; id=' . session_id() . '; path=' . ini_get('session.save_path'));
+    }
 }
 
 /**
@@ -59,7 +89,11 @@ function hasRole($required_roles) {
  */
 function requireLogin() {
     if (!isLoggedIn()) {
-    header('Location: ' . SITE_URL . '/pages/authentication/login.php');
+        // Debug minimal info to diagnose redirect loops without exposing secrets
+        $has_cookie = isset($_COOKIE[session_name()]);
+        $proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https' : 'http');
+        error_log('requireLogin(): not logged in; sid=' . session_id() . '; has_cookie=' . ($has_cookie ? 'yes' : 'no') . '; host=' . ($_SERVER['HTTP_HOST'] ?? '') . '; proto=' . $proto);
+        header('Location: /pages/authentication/login.php');
         exit();
     }
 }
@@ -109,6 +143,23 @@ function loginUser($user_data) {
     
     // Regenerate session ID for security
     session_regenerate_id(true);
+
+    // Explicitly set the session cookie to ensure header is sent
+    $is_https = (
+        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+    );
+    setcookie(
+        session_name(),
+        session_id(),
+        [
+            'expires' => time() + (int)(defined('SESSION_LIFETIME') ? SESSION_LIFETIME : 3600),
+            'path' => '/',
+            'secure' => $is_https,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]
+    );
     
     // Update last login time in database
     try {
@@ -121,6 +172,34 @@ function loginUser($user_data) {
         // Log error but don't break login process
         error_log("Failed to update last login: " . $e->getMessage());
     }
+    
+}
+
+/**
+ * Extend session cookie lifetime (e.g., for "Remember me")
+ */
+function extendSessionCookie($lifetimeSeconds) {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        return;
+    }
+    $params = session_get_cookie_params();
+    // Detect HTTPS behind proxy
+    $is_https = (
+        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+    );
+    setcookie(
+        session_name(),
+        session_id(),
+        [
+            'expires' => time() + (int)$lifetimeSeconds,
+            'path' => $params['path'] ?: '/',
+            'secure' => $is_https,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]
+    );
+    error_log('Session cookie extended by ' . (int)$lifetimeSeconds . ' seconds');
 }
 
 /**
